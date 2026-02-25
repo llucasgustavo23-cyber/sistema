@@ -8,4 +8,4 @@ if __name__ == '__main__':
     window = relatorio()
     window.show()
     app.exec()
-    :
+    
