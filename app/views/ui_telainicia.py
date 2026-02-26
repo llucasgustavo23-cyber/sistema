@@ -22,7 +22,7 @@ class Ui_telainicia(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(961, 645)
+        Form.resize(950, 645)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.frameSamu = QFrame(Form)

@@ -1,29 +1,30 @@
 # app/views/relatorio.py
-from PySide6.QtWidgets import QWidget, QMainWindow, QVBoxLayout
+from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Signal
-from .ui_relatorio import Ui_relatorio  # <-- GERADO A PARTIR DE MAINWINDOW
+from .ui_relatorio import Ui_relatorio  # GERADO A PARTIR DE FORM "Widget"
 
-class Relatorio(QWidget):
+class Relatorio(QWidget, Ui_relatorio):
     gotoTelaInicial = Signal()
 
     def __init__(self):
         super().__init__()
+        self.setupUi(self)     # monta a UI do Designer neste QWidget
+        self._wire()
+        self._carregar()       # opcional: popula dados ao abrir
 
-        temp = QMainWindow()
-        self.ui = Ui_relatorio()
-        self.ui.setupUi(temp)             # ok: é MainWindow
-        from PySide6.QtWidgets import QWidget
-        children = [c for c in self.findChildren(QWidget)]
-        print(f"[DEBUG {self.__class__.__name__}] filhos QWidget:", len(children))
-        for c in children[:5]:
-            print("  -", c.objectName(), type(c).__name__)
-        cw = temp.centralWidget()         # extrai o centralWidget
-        temp.setCentralWidget(None)
+    def _wire(self):
+        # Conecta os botões (só se existirem no .ui)
+        if hasattr(self, "btnVoltar"):
+            self.btnVoltar.clicked.connect(self.gotoTelaInicial.emit)
+        if hasattr(self, "btnAtualizar"):
+            self.btnAtualizar.clicked.connect(self._carregar)
 
-           # encaixa no seu QWidget
-
-        # self._wire()
-        # self._carregar()
-
-    # def _wire(self):
-    #     self.ui.btnVoltar.clicked.connect(self.gotoTelaInicial.emit)
+    def _carregar(self):
+        # Exemplo: popular uma lista, se ela existir no .ui
+        if hasattr(self, "listRelatorios"):
+            self.listRelatorios.clear()
+            self.listRelatorios.addItems([
+                "Relatório 01",
+                "Relatório 02",
+                "Relatório 03",
+            ])
