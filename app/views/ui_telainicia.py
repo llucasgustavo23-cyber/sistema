@@ -15,22 +15,17 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QMainWindow,
-    QPushButton, QSizePolicy, QSpacerItem, QStatusBar,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QPushButton,
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
-class Ui_telainicial(object):
-    def setupUi(self, MainWindow):
-        if not MainWindow.objectName():
-            MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(960, 621)
-        self.centralwidget = QWidget(MainWindow)
-        self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayout_root = QVBoxLayout(self.centralwidget)
-        self.verticalLayout_root.setSpacing(0)
-        self.verticalLayout_root.setObjectName(u"verticalLayout_root")
-        self.verticalLayout_root.setContentsMargins(0, 0, 0, 0)
-        self.frameSamu = QFrame(self.centralwidget)
+class Ui_telainicia(object):
+    def setupUi(self, Form):
+        if not Form.objectName():
+            Form.setObjectName(u"Form")
+        Form.resize(961, 645)
+        self.verticalLayout = QVBoxLayout(Form)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.frameSamu = QFrame(Form)
         self.frameSamu.setObjectName(u"frameSamu")
         self.frameSamu.setStyleSheet(u"#frameSamu {\n"
 "    border-image: url(\"C:/Users/61348016/Downloads/samu.png\") 0 0 0 0 stretch stretch;\n"
@@ -91,20 +86,16 @@ class Ui_telainicial(object):
         self.verticalLayout_frame.addLayout(self.horizontalLayout_row)
 
 
-        self.verticalLayout_root.addWidget(self.frameSamu)
+        self.verticalLayout.addWidget(self.frameSamu)
 
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        self.retranslateUi(Form)
 
-        QMetaObject.connectSlotsByName(MainWindow)
+        QMetaObject.connectSlotsByName(Form)
     # setupUi
 
-    def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"TELAINICIAL", None))
-        self.homeBtn.setText(QCoreApplication.translate("MainWindow", u"LOGIN", None))
+    def retranslateUi(self, Form):
+        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.homeBtn.setText(QCoreApplication.translate("Form", u"LOGIN", None))
     # retranslateUi
 

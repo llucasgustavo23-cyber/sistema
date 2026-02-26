@@ -17,20 +17,18 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QDateEdit,
     QFormLayout, QGroupBox, QHBoxLayout, QHeaderView,
-    QLabel, QLineEdit, QMainWindow, QPushButton,
-    QSizePolicy, QSpacerItem, QStatusBar, QTableWidget,
-    QTableWidgetItem, QVBoxLayout, QWidget)
+    QLabel, QLineEdit, QPushButton, QSizePolicy,
+    QSpacerItem, QTableWidget, QTableWidgetItem, QVBoxLayout,
+    QWidget)
 
 class Ui_telakm(object):
-    def setupUi(self, MainWindow):
-        if not MainWindow.objectName():
-            MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(813, 472)
-        self.centralwidget = QWidget(MainWindow)
-        self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayout_root = QVBoxLayout(self.centralwidget)
-        self.verticalLayout_root.setObjectName(u"verticalLayout_root")
-        self.groupDados = QGroupBox(self.centralwidget)
+    def setupUi(self, Form):
+        if not Form.objectName():
+            Form.setObjectName(u"Form")
+        Form.resize(703, 423)
+        self.verticalLayout = QVBoxLayout(Form)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.groupDados = QGroupBox(Form)
         self.groupDados.setObjectName(u"groupDados")
         self.formLayout = QFormLayout(self.groupDados)
         self.formLayout.setObjectName(u"formLayout")
@@ -57,9 +55,9 @@ class Ui_telakm(object):
         self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.dateRegistro)
 
 
-        self.verticalLayout_root.addWidget(self.groupDados)
+        self.verticalLayout.addWidget(self.groupDados)
 
-        self.groupKm = QGroupBox(self.centralwidget)
+        self.groupKm = QGroupBox(Form)
         self.groupKm.setObjectName(u"groupKm")
         self.verticalLayout_km = QVBoxLayout(self.groupKm)
         self.verticalLayout_km.setObjectName(u"verticalLayout_km")
@@ -131,7 +129,7 @@ class Ui_telakm(object):
         self.verticalLayout_km.addLayout(self.horizontalLayout_total)
 
 
-        self.verticalLayout_root.addWidget(self.groupKm)
+        self.verticalLayout.addWidget(self.groupKm)
 
         self.horizontalLayout_buttons = QHBoxLayout()
         self.horizontalLayout_buttons.setObjectName(u"horizontalLayout_buttons")
@@ -139,50 +137,46 @@ class Ui_telakm(object):
 
         self.horizontalLayout_buttons.addItem(self.horizontalSpacer3)
 
-        self.btnSalvar = QPushButton(self.centralwidget)
+        self.btnSalvar = QPushButton(Form)
         self.btnSalvar.setObjectName(u"btnSalvar")
 
         self.horizontalLayout_buttons.addWidget(self.btnSalvar)
 
-        self.btnLimpar = QPushButton(self.centralwidget)
+        self.btnLimpar = QPushButton(Form)
         self.btnLimpar.setObjectName(u"btnLimpar")
 
         self.horizontalLayout_buttons.addWidget(self.btnLimpar)
 
-        self.btnFechar = QPushButton(self.centralwidget)
+        self.btnFechar = QPushButton(Form)
         self.btnFechar.setObjectName(u"btnFechar")
 
         self.horizontalLayout_buttons.addWidget(self.btnFechar)
 
 
-        self.verticalLayout_root.addLayout(self.horizontalLayout_buttons)
+        self.verticalLayout.addLayout(self.horizontalLayout_buttons)
 
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        self.retranslateUi(Form)
 
-        QMetaObject.connectSlotsByName(MainWindow)
+        QMetaObject.connectSlotsByName(Form)
     # setupUi
 
-    def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Controle de Quilometragem de Ambul\u00e2ncia", None))
-        self.groupDados.setTitle(QCoreApplication.translate("MainWindow", u"Dados do registro", None))
-        self.labelPlaca.setText(QCoreApplication.translate("MainWindow", u"Placa:", None))
-        self.linePlaca.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Ex.: ABC1D23 ou ABC-1234", None))
-        self.labelDataRegistro.setText(QCoreApplication.translate("MainWindow", u"Data do registro:", None))
-        self.dateRegistro.setDisplayFormat(QCoreApplication.translate("MainWindow", u"dd/MM/yyyy", None))
-        self.groupKm.setTitle(QCoreApplication.translate("MainWindow", u"Quilometragem por m\u00eas", None))
-        self.labelAno.setText(QCoreApplication.translate("MainWindow", u"Ano:", None))
-        self.btnPreencherAno.setText(QCoreApplication.translate("MainWindow", u"Preencher meses do ano", None))
-        self.btnAddMes.setText(QCoreApplication.translate("MainWindow", u"Adicionar m\u00eas", None))
-        self.btnRemoverLinha.setText(QCoreApplication.translate("MainWindow", u"Remover", None))
-        self.labelTotalTxt.setText(QCoreApplication.translate("MainWindow", u"Total no ano (km):", None))
-        self.labelTotalValor.setText(QCoreApplication.translate("MainWindow", u"0", None))
-        self.btnSalvar.setText(QCoreApplication.translate("MainWindow", u"Salvar", None))
-        self.btnLimpar.setText(QCoreApplication.translate("MainWindow", u"Limpar", None))
-        self.btnFechar.setText(QCoreApplication.translate("MainWindow", u"Fechar", None))
+    def retranslateUi(self, Form):
+        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.groupDados.setTitle(QCoreApplication.translate("Form", u"Dados do registro", None))
+        self.labelPlaca.setText(QCoreApplication.translate("Form", u"Placa:", None))
+        self.linePlaca.setPlaceholderText(QCoreApplication.translate("Form", u"Ex.: ABC1D23 ou ABC-1234", None))
+        self.labelDataRegistro.setText(QCoreApplication.translate("Form", u"Data do registro:", None))
+        self.dateRegistro.setDisplayFormat(QCoreApplication.translate("Form", u"dd/MM/yyyy", None))
+        self.groupKm.setTitle(QCoreApplication.translate("Form", u"Quilometragem por m\u00eas", None))
+        self.labelAno.setText(QCoreApplication.translate("Form", u"Ano:", None))
+        self.btnPreencherAno.setText(QCoreApplication.translate("Form", u"Preencher meses do ano", None))
+        self.btnAddMes.setText(QCoreApplication.translate("Form", u"Adicionar m\u00eas", None))
+        self.btnRemoverLinha.setText(QCoreApplication.translate("Form", u"Remover", None))
+        self.labelTotalTxt.setText(QCoreApplication.translate("Form", u"Total no ano (km):", None))
+        self.labelTotalValor.setText(QCoreApplication.translate("Form", u"0", None))
+        self.btnSalvar.setText(QCoreApplication.translate("Form", u"Salvar", None))
+        self.btnLimpar.setText(QCoreApplication.translate("Form", u"Limpar", None))
+        self.btnFechar.setText(QCoreApplication.translate("Form", u"Fechar", None))
     # retranslateUi
 

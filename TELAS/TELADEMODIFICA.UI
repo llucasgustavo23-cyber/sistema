@@ -1,273 +1,255 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>978</width>
-    <height>659</height>
+    <width>950</width>
+    <height>581</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Cadastro Moderno</string>
+   <string>Form</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="root">
-    <property name="spacing">
-     <number>20</number>
-    </property>
-    <property name="leftMargin">
-     <number>24</number>
-    </property>
-    <property name="topMargin">
-     <number>24</number>
-    </property>
-    <property name="rightMargin">
-     <number>24</number>
-    </property>
-    <property name="bottomMargin">
-     <number>24</number>
-    </property>
-    <item>
-     <widget class="QLabel" name="title">
-      <property name="styleSheet">
-       <string>font:700 22pt &quot;Segoe UI&quot;; padding-bottom:4px;</string>
-      </property>
-      <property name="text">
-       <string>MODIFICAR DADOS</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="card">
-      <property name="styleSheet">
-       <string>#card{background:#ffffff;border-radius:12px;padding:20px;border:1px solid #dddddd;}
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="title">
+     <property name="styleSheet">
+      <string>font:700 22pt &quot;Segoe UI&quot;; padding-bottom:4px;</string>
+     </property>
+     <property name="text">
+      <string>MODIFICAR DADOS</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="card">
+     <property name="styleSheet">
+      <string>#card{background:#ffffff;border-radius:12px;padding:20px;border:1px solid #dddddd;}
 QLabel.formLabel{font:600 10pt 'Segoe UI'; color:#444; margin-bottom:4px;}
 QLineEdit,QComboBox,QDateEdit,QSpinBox{background:#f7f7f7;border:1px solid #cfcfcf;border-radius:6px;padding:8px 10px; font:10pt 'Segoe UI';}</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <layout class="QGridLayout" name="grid" columnstretch="0,0">
-       <property name="leftMargin">
-        <number>12</number>
-       </property>
-       <property name="topMargin">
-        <number>12</number>
-       </property>
-       <property name="rightMargin">
-        <number>12</number>
-       </property>
-       <property name="bottomMargin">
-        <number>12</number>
-       </property>
-       <property name="horizontalSpacing">
-        <number>24</number>
-       </property>
-       <property name="verticalSpacing">
-        <number>14</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="lbl_modelo">
-         <property name="styleSheet">
-          <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-         </property>
-         <property name="text">
-          <string>Modelo</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QLineEdit" name="modelo">
-         <property name="placeholderText">
-          <string>Insira aqui</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="lbl_placa">
-         <property name="styleSheet">
-          <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-         </property>
-         <property name="text">
-          <string>Placa</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLineEdit" name="placa">
-         <property name="placeholderText">
-          <string>Insira aqui</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="lbl_chassi">
-         <property name="styleSheet">
-          <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-         </property>
-         <property name="text">
-          <string>Chassi</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="chassi">
-         <property name="placeholderText">
-          <string>Insira aqui</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="lbl_data">
-         <property name="styleSheet">
-          <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-         </property>
-         <property name="text">
-          <string>Data de aquisição</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QDateEdit" name="data">
-         <property name="displayFormat">
-          <string>dd/MM/yyyy</string>
-         </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="lbl_tipo">
-         <property name="styleSheet">
-          <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-         </property>
-         <property name="text">
-          <string>Tipo de aquisição</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QComboBox" name="tipo">
-         <item>
-          <property name="text">
-           <string>Compra</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Doação</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Locação</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="lbl_ano">
-         <property name="styleSheet">
-          <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-         </property>
-         <property name="text">
-          <string>Ano</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QSpinBox" name="ano">
-         <property name="minimum">
-          <number>1950</number>
-         </property>
-         <property name="maximum">
-          <number>2100</number>
-         </property>
-         <property name="value">
-          <number>2024</number>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLabel" name="lbl_cnes">
-         <property name="styleSheet">
-          <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-         </property>
-         <property name="text">
-          <string>CNES</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QLineEdit" name="cnes">
-         <property name="placeholderText">
-          <string>Insira aqui</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="lbl_denominacao">
-         <property name="styleSheet">
-          <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-         </property>
-         <property name="text">
-          <string>Denominação</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="0" colspan="2">
-        <widget class="QLineEdit" name="denominacao">
-         <property name="placeholderText">
-          <string>Insira aqui</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="btnrow">
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <layout class="QGridLayout" name="grid" columnstretch="0,0">
       <property name="leftMargin">
-       <number>0</number>
+       <number>12</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>12</number>
       </property>
       <property name="rightMargin">
-       <number>0</number>
+       <number>12</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>12</number>
       </property>
-      <item>
-       <spacer name="hs">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <property name="horizontalSpacing">
+       <number>24</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>14</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lbl_modelo">
+        <property name="styleSheet">
+         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
+        <property name="text">
+         <string>Modelo</string>
         </property>
-       </spacer>
+       </widget>
       </item>
-      <item>
-       <widget class="QDialogButtonBox" name="buttonBox">
-        <property name="standardButtons">
-         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLineEdit" name="modelo">
+        <property name="placeholderText">
+         <string>Insira aqui</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lbl_placa">
+        <property name="styleSheet">
+         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
+        </property>
+        <property name="text">
+         <string>Placa</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLineEdit" name="placa">
+        <property name="placeholderText">
+         <string>Insira aqui</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="lbl_chassi">
+        <property name="styleSheet">
+         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
+        </property>
+        <property name="text">
+         <string>Chassi</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="chassi">
+        <property name="placeholderText">
+         <string>Insira aqui</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="lbl_data">
+        <property name="styleSheet">
+         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
+        </property>
+        <property name="text">
+         <string>Data de aquisição</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QDateEdit" name="data">
+        <property name="displayFormat">
+         <string>dd/MM/yyyy</string>
+        </property>
+        <property name="calendarPopup">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="lbl_tipo">
+        <property name="styleSheet">
+         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
+        </property>
+        <property name="text">
+         <string>Tipo de aquisição</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QComboBox" name="tipo">
+        <item>
+         <property name="text">
+          <string>Compra</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Doação</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Locação</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="lbl_ano">
+        <property name="styleSheet">
+         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
+        </property>
+        <property name="text">
+         <string>Ano</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QSpinBox" name="ano">
+        <property name="minimum">
+         <number>1950</number>
+        </property>
+        <property name="maximum">
+         <number>2100</number>
+        </property>
+        <property name="value">
+         <number>2024</number>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="lbl_cnes">
+        <property name="styleSheet">
+         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
+        </property>
+        <property name="text">
+         <string>CNES</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLineEdit" name="cnes">
+        <property name="placeholderText">
+         <string>Insira aqui</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="lbl_denominacao">
+        <property name="styleSheet">
+         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
+        </property>
+        <property name="text">
+         <string>Denominação</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0" colspan="2">
+       <widget class="QLineEdit" name="denominacao">
+        <property name="placeholderText">
+         <string>Insira aqui</string>
         </property>
        </widget>
       </item>
      </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="btnrow">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="hs">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
