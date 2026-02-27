@@ -7,4 +7,4 @@ class cadastro(QWidget,Ui_cadastro):
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)  # nome sempre é setupUi
-        self.setWindowTitle("Tela inicial do sistema")
+        self.setWindowTitle("Tela inicial do sistema")     

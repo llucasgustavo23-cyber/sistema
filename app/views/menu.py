@@ -7,3 +7,4 @@ class menu (QWidget, Ui_menu ):
         super().__init__()
         self.setupUi(self)  # nome sempre é setupUi
         self.setWindowTitle("Tela inicial do sistema")
+        # gotoRelatorio = Signal()
