@@ -2,7 +2,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 from PySide6.QtCore import Signal, QDate
-from PySide6.QtWidgets import QWidget, QMessageBox, QApplication
+from PySide6.QtWidgets import QWidget, QMessageBox, QApplication, QDialogButtonBox
+from PySide6.QtGui import QCloseEvent
 from ui_telademodificar import Ui_modificar
 import sys
 
@@ -19,23 +20,41 @@ class AmbulanciaDTO:
 
 
 class Modificar(QWidget, Ui_modificar):
-    gotomenu = Signal()
-    submitted = Signal(AmbulanciaDTO)
+    gotomenu = Signal()                       
+    submitted = Signal(AmbulanciaDTO)         
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setupUi(self)
         self.setWindowTitle("Modificar Dados da Ambulância")
 
-        # --- Aliases para clareza (opcional): no .ui, 'lineEdit' é a Placa ---
-        self.placa = self.lineEdit   # QLineEdit (rótulo "Placa")
-        self.modelo_combo = self.comboBox  # QComboBox (rótulo "Modelo")
+        # Aliases conforme seu .ui
+        self.placa = self.lineEdit           
+        self.modelo_combo = self.comboBox     
 
-        # Conexões dos botões OK/Cancel
+        # -------------------- Conexões dos botões OK/Cancel --------------------
+        # 1) Conexões padrão (funcionam se o buttonBox tiver roles Ok/Cancel)
         self.buttonBox.accepted.connect(self.on_buttonBox_accepted)
         self.buttonBox.rejected.connect(self.on_buttonBox_rejected)
 
-        # Remover destaque de erro assim que o usuário começar a digitar/alterar
+        # 2) Opção 1 (garantia): conecta diretamente os botões Ok/Cancel
+        try:
+            ok_btn = self.buttonBox.button(QDialogButtonBox.Ok)
+            cancel_btn = self.buttonBox.button(QDialogButtonBox.Cancel)
+
+            if ok_btn is not None:
+                ok_btn.clicked.connect(self.on_buttonBox_accepted)
+            else:
+                print("[Modificar] Aviso: buttonBox não possui botão Ok (verifique o .ui)")
+
+            if cancel_btn is not None:
+                cancel_btn.clicked.connect(self.on_buttonBox_rejected)
+            else:
+                print("[Modificar] Aviso: buttonBox não possui botão Cancel (verifique o .ui)")
+        except Exception as e:
+            print("[Modificar] Aviso: não consegui conectar diretamente aos botões do buttonBox:", e)
+
+        # Remover destaque de erro assim que alterar algo
         self.placa.textChanged.connect(lambda _: self.placa.setStyleSheet(""))
         self.chassi.textChanged.connect(lambda _: self.chassi.setStyleSheet(""))
         self.cnes.textChanged.connect(lambda _: self.cnes.setStyleSheet(""))
@@ -44,29 +63,22 @@ class Modificar(QWidget, Ui_modificar):
         self.ano.valueChanged.connect(lambda _: self.ano.setStyleSheet(""))
         self.data.dateChanged.connect(lambda _: self.data.setStyleSheet(""))
 
-        # (Opcional) defaults
-        # self.data.setDate(QDate.currentDate())
-        # self.data.setCalendarPopup(True)
+    # -------------------- OK / CANCELAR --------------------
 
     def on_buttonBox_accepted(self):
-        """Valida, destaca em vermelho e mostra UMA mensagem genérica se houver campos vazios."""
+        """Valida, emite o DTO e volta para o Menu (sem fechar o widget)."""
+        print("[Modificar] OK clicado")
         self._resetar_estilos()
 
         campos_invalidos = []
 
-        # Campos obrigatórios:
-        # - Placa (lineEdit)
+        # Valida obrigatórios
         if not self.placa.text().strip():
             campos_invalidos.append(self.placa)
-
-        # - Chassi
         if not self.chassi.text().strip():
             campos_invalidos.append(self.chassi)
-
-        # - CNES
         if not self.cnes.text().strip():
             campos_invalidos.append(self.cnes)
-
         if not self.denominacao.text().strip():
             campos_invalidos.append(self.denominacao)
 
@@ -76,10 +88,10 @@ class Modificar(QWidget, Ui_modificar):
             QMessageBox.warning(self, "Campos obrigatórios", "Preencha os campos destacados.")
             return
 
-        # Monta o DTO com o mapeamento correto do seu .ui:
+        # Monta DTO
         dto = AmbulanciaDTO(
-            modelo=self.modelo_combo.currentText().strip(),  
-            placa=self.placa.text().strip(),                 
+            modelo=self.modelo_combo.currentText().strip(),
+            placa=self.placa.text().strip(),
             chassi=self.chassi.text().strip(),
             tipo_aquisicao=self.tipo.currentText(),
             data_aquisicao=self.data.date(),
@@ -88,17 +100,29 @@ class Modificar(QWidget, Ui_modificar):
             denominacao=self.denominacao.text().strip(),
         )
 
+        # Emite para quem quiser persistir/sincronizar
         self.submitted.emit(dto)
         QMessageBox.information(self, "Sucesso", "Cadastro salvo com sucesso!")
-        self.close()
+        self.gotomenu.emit()
 
     def on_buttonBox_rejected(self):
-        self.close()
+        """Cancelar → voltar para o Menu (sem fechar o widget)."""
+        print("[Modificar] Cancelar clicado")
+        self._resetar_estilos()
+        self.gotomenu.emit()
 
-    # ---------- Helpers de validação/estilo ----------
+    # -------------------- Proteção contra fechamento --------------------
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        if self.parent() is not None:
+            self.gotomenu.emit()
+            event.ignore()  
+        else:
+            event.accept()
+
+    # -------------------- Helpers de validação/estilo --------------------
 
     def _resetar_estilos(self):
-        """Remove bordas vermelhas dos campos (volta ao estilo padrão)."""
         for w in (self.placa, self.chassi, self.cnes, self.denominacao):
             w.setStyleSheet("")
         self.modelo_combo.setStyleSheet("")
@@ -106,7 +130,6 @@ class Modificar(QWidget, Ui_modificar):
         self.data.setStyleSheet("")
 
     def _destacar_campos_vazios(self, widgets):
-        """Aplica borda vermelha nos widgets passados."""
         estilo_line = "QLineEdit { border: 1px solid #d9534f; border-radius: 6px; }"
         estilo_combo = "QComboBox { border: 1px solid #d9534f; border-radius: 6px; }"
         estilo_spin = "QSpinBox { border: 1px solid #d9534f; border-radius: 6px; }"
@@ -123,25 +146,16 @@ class Modificar(QWidget, Ui_modificar):
             elif cls == "QDateEdit":
                 w.setStyleSheet(estilo_date)
             else:
-                # fallback
                 w.setStyleSheet(estilo_line)
 
 
-# Exemplo de uso
-def on_submitted(dto: AmbulanciaDTO):
-    print("Dados salvos:", dto)
+# # Exemplo de uso local
+# def on_submitted(dto: AmbulanciaDTO):
+#     print("Dados salvos:", dto)
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    w = Modificar()
-    w.submitted.connect(on_submitted)
-    w.show()
-    sys.exit(app.exec())
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    w = Modificar()
-    w.submitted.connect(on_submitted)
-    w.show()
-    sys.exit(app.exec())       
-
-
+# if __name__ == "__main__":
+#     app = QApplication(sys.argv)
+#     w = Modificar()
+#     w.submitted.connect(on_submitted)
+#     w.show()
+#     sys.exit(app.exec())

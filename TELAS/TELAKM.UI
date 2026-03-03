@@ -7,13 +7,39 @@
     <x>0</x>
     <y>0</y>
     <width>703</width>
-    <height>423</height>
+    <height>428</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupDados_2">
+     <property name="title">
+      <string>Quilometragem diária</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelPlaca_2">
+        <property name="text">
+         <string>KIM</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="linePlaca_2">
+        <property name="maxLength">
+         <number>8</number>
+        </property>
+        <property name="placeholderText">
+         <string>Ex.: 100KM</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item>
     <widget class="QGroupBox" name="groupDados">
      <property name="title">

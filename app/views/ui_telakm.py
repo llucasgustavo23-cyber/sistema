@@ -25,9 +25,27 @@ class Ui_telakm(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(703, 423)
+        Form.resize(703, 428)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.groupDados_2 = QGroupBox(Form)
+        self.groupDados_2.setObjectName(u"groupDados_2")
+        self.formLayout_2 = QFormLayout(self.groupDados_2)
+        self.formLayout_2.setObjectName(u"formLayout_2")
+        self.labelPlaca_2 = QLabel(self.groupDados_2)
+        self.labelPlaca_2.setObjectName(u"labelPlaca_2")
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.labelPlaca_2)
+
+        self.linePlaca_2 = QLineEdit(self.groupDados_2)
+        self.linePlaca_2.setObjectName(u"linePlaca_2")
+        self.linePlaca_2.setMaxLength(8)
+
+        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.linePlaca_2)
+
+
+        self.verticalLayout.addWidget(self.groupDados_2)
+
         self.groupDados = QGroupBox(Form)
         self.groupDados.setObjectName(u"groupDados")
         self.formLayout = QFormLayout(self.groupDados)
@@ -163,6 +181,9 @@ class Ui_telakm(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.groupDados_2.setTitle(QCoreApplication.translate("Form", u"Quilometragem di\u00e1ria", None))
+        self.labelPlaca_2.setText(QCoreApplication.translate("Form", u"KM", None))
+        self.linePlaca_2.setPlaceholderText(QCoreApplication.translate("Form", u"Ex.: 100KM", None))
         self.groupDados.setTitle(QCoreApplication.translate("Form", u"Dados do registro", None))
         self.labelPlaca.setText(QCoreApplication.translate("Form", u"Placa:", None))
         self.linePlaca.setPlaceholderText(QCoreApplication.translate("Form", u"Ex.: ABC1D23 ou ABC-1234", None))

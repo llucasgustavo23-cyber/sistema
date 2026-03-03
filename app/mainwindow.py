@@ -1,170 +1,161 @@
-# from PySide6.QtWidgets import QMainWindow, QStackedWidget
-# from PySide6.QtCore import Slot
-# from .views.login import Login
-# from .views.telainicial import TelaInicial
-# from .views.relatorio import Relatorio
-# from .views.menu import menu
-# from .views.cadastro import cadastro
-# # from .views.telakm import telakm
-# # from .views.modificar import modificar
-# # from .views.principal import *
-
-# class MainWindow(QMainWindow):
-#     def __init__(self) -> None:
-#         super().__init__()
-#         self.setWindowTitle("Meu Sistema")
-
-#         self._stack = QStackedWidget(self)
-#         self.setCentralWidget(self._stack)
-
-#         # Instancia as telas uma vez (ou poderia ser lazy)
-#         self.login = Login()
-#         self.telaincial = TelaInicial()
-#         self.relatorio = Relatorio()
-#         self.cadastro = cadastro()
-#         self.menu = menu()
-#         # self.telakm = telakm()
-#         # self.modificar = modificar()
-
-#         self._stack.addWidget(self.login)     
-#         self._stack.addWidget(self.telaincial)       
-#         self._stack.addWidget(self.relatorio)
-#         # self._stack.addWidget(self.menu)   
-#         self._stack.addWidget(self.cadastro)  
-#         # self._stack.addWidget(self.telakm)  
-#         # self._stack.addWidget(self.modificar)  
-
-#         # Conexões diretas entre sinais das telas e slots da MainWindow
-#         self.telaincial.gotoLogin.connect(self.show_login)
-#         self.menu.gotoCadastro.connect(self.show_cadastro)
-#         # self.menu.gotomodificar.connect(self.show_modificar)
-#         # self.menu.gotoRelatorio.connect(self.show_relatorio)
-#         # self.menu.gototelakm.connect(self.show_telakm)
-#         # self.login.gotomenu.connect(self.show_menu)
-
-#         self.show_cadastro()
-
-    
-#     def show_login(self):
-#         dialog = Login(self)   
-#         dialog.loggedIn.connect(self._usuario_logado)
-
-#         resultado = dialog.exec()  
-#         if resultado:
-#             print("Login OK")
-#         else:
-#             print("Login cancelado ou inválido")
-
-#     def _usuario_logado(self, usuario):
-#         print(f"Usuário autenticado: {usuario}")
-#         self.show_telainicial()  
-
-    
-#     def show_telainicial(self) -> None:
-#         # exemplo: se precisar enviar dados para Home, chame um método
-#         # self.home.set_usuario_logado(self.login.user())
-#         self._stack.setCurrentWidget(self.telaincial)
-
-
-#     def show_relatorio(self) -> None:
-#         # exemplo: atualizar a tela antes de mostrar
-#         # self.relatorio.carregar_dados()
-#         self._stack.setCurrentWidget(self.relatorio)
-
-#     # def show_menu(self) -> None:
-#     #     self._stack.setCurrentWidget(self.menu)
-
-#     # def show_cadastro(self) -> None:
-#     #     self._stack.setCurrentWidget(self.cadastro)
-
-#     # def show_modificart(self) ->None:
-#     #     self._stack.setCurrentWidget(self.modificar)
-
-#     # def show_telakm(self) -> None:
-#     #     self._stack.setCurrentWidget(self.telakm)    
-
-from PySide6.QtWidgets import QMainWindow, QStackedWidget
+from PySide6.QtWidgets import QMainWindow, QStackedWidget, QApplication
 from PySide6.QtCore import Slot
-from .views.login import Login
+
+# Views normais
+from .views.login import Login              # QDialog
 from .views.telainicial import TelaInicial
 from .views.relatorio import Relatorio
 from .views.menu import menu
-from .views.cadastro import cadastro
+from .views.cadastro import Cadastro
 from .views.telakm import telakm
-from .views.modificar import modificar
-from .views.principal import *
+from .views.modificar import Modificar
+
 
 class MainWindow(QMainWindow):
-    def __init__(self) -> None:  
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Meu Sistema")
+
+        # --- Stack ---
         self._stack = QStackedWidget(self)
         self.setCentralWidget(self._stack)
 
-        # Instancia as telas uma vez (ou poderia ser lazy)
-        self.login = Login()
-        self.telaincial = TelaInicial() 
+        # --- Instanciar telas ---
+        self.telainicial = TelaInicial()
         self.relatorio = Relatorio()
-        self.cadastro = cadastro()
+        self.cadastro = Cadastro()
         self.menu = menu()
         self.telakm = telakm()
-        self.modificar = modificar()
+        self.modificar = Modificar()
 
-        self._stack.addWidget(self.login)
-        self._stack.addWidget(self.telaincial)
+        # --- Adiciona ao stack ---
+        self._stack.addWidget(self.telainicial)
         self._stack.addWidget(self.relatorio)
         self._stack.addWidget(self.cadastro)
         self._stack.addWidget(self.telakm)
         self._stack.addWidget(self.modificar)
-        self._stack.addWidget(self.menu)  
+        self._stack.addWidget(self.menu)
 
-        # Conexões diretas entre sinais das telas e slots da MainWindow
-        self.telaincial.gotoLogin.connect(self.show_login)
-        self.login.gotomenu.connect(self.show_menu)
-        self.menu.gotoCadastro.connect(self.show_cadastro)
-        self.menu.gotomodificar.connect(self.show_modificar)
-        self.menu.gotoRelatorio.connect(self.show_relatorio)
-        self.menu.gototelakm.connect(self.show_telakm)
-        self.cadastro.gotomenu.connect(self.show_menu)  
-        self.modificar.gotomenu.connect(self.show_menu)  
-        self.telakm.gotomenu.connect(self.show_menu)  
-        self.relatorio.gotomenu.connect(self.show_menu)  
-        
-        self.show_login()
+        # --- Conectar sinal do botão Login da TelaInicial ---
+        # Quando clicar no botão de login → abre o QDialog Login
+        if hasattr(self.telainicial, "gotoLogin"):
+            self.telainicial.gotoLogin.connect(self._abrir_login)
 
-    def show_login(self):
+        # --- Conectar sinais do menu ---
+        if hasattr(self.menu, "gotoCadastro"):
+            self.menu.gotoCadastro.connect(self.show_cadastro)
+        if hasattr(self.menu, "gotomodificar"):
+            self.menu.gotomodificar.connect(self.show_modificar)
+        if hasattr(self.menu, "gotoRelatorio"):
+            self.menu.gotoRelatorio.connect(self.show_relatorio)
+        if hasattr(self.menu, "gototelakm"):
+            self.menu.gototelakm.connect(self.show_telakm)
+
+        # --- Conectar sinais para voltar ao Menu ---
+        if hasattr(self.cadastro, "gotomenu"):
+            self.cadastro.gotomenu.connect(self.show_menu)
+        if hasattr(self.modificar, "gotomenu"):
+            self.modificar.gotomenu.connect(self.show_menu)
+        if hasattr(self.telakm, "gotomenu"):
+            self.telakm.gotomenu.connect(self.show_menu)
+        if hasattr(self.relatorio, "gotomenu"):
+            self.relatorio.gotomenu.connect(self.show_menu)
+
+        # --- Estado de login ---
+        self._usuario = None
+        self._autenticado = False
+
+        # --- MOSTRAR TELA INICIAL PRIMEIRO ---
+        self.show_telainicial()
+
+        # ========= Opção 1: tamanho inicial + centralizar + tamanho mínimo =========
+        self.resize(1280, 800)          # tamanho inicial ao abrir
+        self.setMinimumSize(1000, 650)  # evita janela minúscula
+        self.center_on_screen()         # centraliza na tela
+        # ==========================================================================
+
+    # --------------------------- Utilitário para centralizar ---------------------------
+    def center_on_screen(self) -> None:
+        """
+        Centraliza a MainWindow na tela atual.
+        """
+        screen = self.screen() or QApplication.primaryScreen()
+        if not screen:
+            return
+        geo = self.frameGeometry()
+        geo.moveCenter(screen.availableGeometry().center())
+        self.move(geo.topLeft())
+
+    # ======================================================
+    #                 ↙️  MÉTODOS DE LOGIN  ↘️
+    # ======================================================
+    def _abrir_login(self) -> None:
+        """Abre o QDialog somente quando o usuário clicar em Login."""
         dialog = Login(self)
-        dialog.loggedIn.connect(self._usuario_logado)
+        if hasattr(dialog, "loggedIn"):
+            dialog.loggedIn.connect(self._on_logged_in)
 
-        resultado = dialog.exec()
-        if resultado:
-            print("Login OK")
+        result = dialog.exec()  # bloqueia até fechar
+
+        if result:
+            self._autenticado = True
+            # Se o seu Login define self.usuario_logado, use-o:
+            usuario_nome = getattr(dialog, "usuario_logado", None)
+            # Caso contrário, tente 'usuario' como fallback:
+            self._usuario = usuario_nome or getattr(dialog, "usuario", None)
+            self.show_menu()  # Vá para o menu depois do login
         else:
-            print("Login cancelado ou inválido")
+            # Login cancelado → fica na TelaInicial
+            pass
 
-    def _usuario_logado(self, usuario):
-        print(f"Usuário autenticado: {usuario}")
-        self.show_menu()
+    @Slot(str)
+    def _on_logged_in(self, nome: str):
+        self._usuario = nome
+        self._autenticado = True
 
+    # ======================================================
+    #                 ↙️  PROTEÇÃO DE TELAS  ↘️
+    # ======================================================
+    def _require_login(self) -> bool:
+        """Protege as telas — só acessa se estiver logado."""
+        if self._autenticado:
+            return True
+        self._abrir_login()
+        return self._autenticado
+
+    # ======================================================
+    #                 ↙️  MÉTODOS DE NAVEGAÇÃO  ↘️
+    # ======================================================
+    @Slot()
     def show_telainicial(self) -> None:
-        # exemplo: se precisar enviar dados para Home, chame um método
-        # self.home.set_usuario_logado(self.login.user())
-        self._stack.setCurrentWidget(self.telaincial)
+        self._stack.setCurrentWidget(self.telainicial)
 
+    @Slot()
     def show_relatorio(self) -> None:
-        # exemplo: atualizar a tela antes de mostrar
-        # self.relatorio.carregar_dados()
+        if not self._require_login():
+            return
         self._stack.setCurrentWidget(self.relatorio)
-         
-    def show_modificar(self) ->None:
+
+    @Slot()
+    def show_modificar(self) -> None:
+        if not self._require_login():
+            return
         self._stack.setCurrentWidget(self.modificar)
 
-
+    @Slot()
     def show_telakm(self) -> None:
+        if not self._require_login():
+            return
         self._stack.setCurrentWidget(self.telakm)
-    #    
+
+    @Slot()
     def show_menu(self) -> None:
+        if not self._require_login():
+            return
         self._stack.setCurrentWidget(self.menu)
 
-    def show_cadastro(self) -> None:  
+    @Slot()
+    def show_cadastro(self) -> None:
+        if not self._require_login():
+            return
         self._stack.setCurrentWidget(self.cadastro)
