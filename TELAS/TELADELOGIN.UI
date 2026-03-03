@@ -694,13 +694,6 @@ color: rgb(255, 255, 255);</string>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnCadastrar">
-          <property name="text">
-           <string>Cadastrar</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <spacer name="hRight">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>

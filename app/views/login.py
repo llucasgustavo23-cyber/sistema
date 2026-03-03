@@ -1,7 +1,7 @@
 
 from PySide6.QtWidgets import QDialog
 from PySide6.QtCore import Signal
-from .ui_teladelogin import Ui_login  
+from .ui_login import Ui_login  
 
 class Login(QDialog, Ui_login):
     gotoTelaInicial = Signal()
@@ -35,5 +35,7 @@ class Login(QDialog, Ui_login):
             self.lblMensagem.setText("Usuário ou senha inválidos.")
 
     def _auth(self, usuario: str, senha: str) -> bool:
-        return usuario == "admin" and senha == "123"
+        # TODO: Replace with actual database or authentication service call
+        # This is a placeholder implementation
+        return usuario == "lucas" and senha == "123"
 

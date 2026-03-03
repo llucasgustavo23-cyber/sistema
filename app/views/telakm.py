@@ -4,6 +4,7 @@ from PySide6.QtCore import Signal
 
 class telakm(QWidget,Ui_telakm):
     gotomenu = Signal() 
+    
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)  # nome sempre é setupUi

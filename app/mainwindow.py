@@ -92,7 +92,7 @@ from .views.menu import menu
 from .views.cadastro import cadastro
 from .views.telakm import telakm
 from .views.modificar import modificar
-# from .views.principal import *
+from .views.principal import *
 
 class MainWindow(QMainWindow):
     def __init__(self) -> None:  
@@ -129,7 +129,8 @@ class MainWindow(QMainWindow):
         self.modificar.gotomenu.connect(self.show_menu)  
         self.telakm.gotomenu.connect(self.show_menu)  
         self.relatorio.gotomenu.connect(self.show_menu)  
-        self.show_telainicial()
+        
+        self.show_login()
 
     def show_login(self):
         dialog = Login(self)

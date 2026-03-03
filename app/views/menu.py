@@ -14,3 +14,13 @@ class menu (QWidget, Ui_menu ):
         self.setupUi(self) 
         self.setWindowTitle("Tela inicial do sistema")
         self._wire()
+
+    def _wire(self):
+        if hasattr(self, "homeBtn"):
+            self.btnCadastroAmb.clicked.connect(self.gotoCadastro.emit)
+        if hasattr(self, "homeBtn"):
+            self.btnModificarAmb.clicked.connect(self.gotomodificar.emit)
+        if hasattr(self, "homeBtn"):
+            self.btnInserirDados.clicked.connect(self.gototelakm.emit)
+        if hasattr(self, "homeBtn"):
+            self.btnRelatorio.clicked.connect(self.gotoRelatorio.emit)

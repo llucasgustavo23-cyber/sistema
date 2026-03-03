@@ -9,13 +9,13 @@ class Relatorio(QWidget, Ui_relatorio):
     def __init__(self):
         super().__init__()
         self.setupUi(self)     
-        self._wire()
+        # self._wire()
         self._carregar()       
 
     def _wire(self):
         # Conecta os botões (só se existirem no .ui)
-        if hasattr(self, "btnVoltar"):
-            self.btnVoltar.clicked.connect(self.gotoTelaInicial.emit)
+        # if hasattr(self, "btnVoltar"):
+        #     self.btnVoltar.clicked.connect(self.gotoTelaInicial.emit)
         if hasattr(self, "btnAtualizar"):
             self.btnAtualizar.clicked.connect(self._carregar)
 
