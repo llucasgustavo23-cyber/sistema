@@ -15,46 +15,46 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHeaderView, QLabel,
-    QPushButton, QSizePolicy, QTableWidget, QTableWidgetItem,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QGroupBox, QHBoxLayout,
+    QHeaderView, QLabel, QPushButton, QSizePolicy,
+    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
 
-class Ui_listadados(object):
+class Ui_listardados(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
         Form.resize(818, 578)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.label = QLabel(Form)
-        self.label.setObjectName(u"label")
-        font = QFont()
-        font.setPointSize(16)
-        font.setBold(True)
-        self.label.setFont(font)
-        self.label.setAlignment(Qt.AlignCenter)
+        self.title = QLabel(Form)
+        self.title.setObjectName(u"title")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.title.sizePolicy().hasHeightForWidth())
+        self.title.setSizePolicy(sizePolicy)
 
-        self.verticalLayout.addWidget(self.label)
+        self.verticalLayout.addWidget(self.title)
 
         self.tableWidget = QTableWidget(Form)
         if (self.tableWidget.columnCount() < 8):
             self.tableWidget.setColumnCount(8)
-        font1 = QFont()
-        font1.setPointSize(10)
+        font = QFont()
+        font.setPointSize(10)
         __qtablewidgetitem = QTableWidgetItem()
-        __qtablewidgetitem.setFont(font1);
+        __qtablewidgetitem.setFont(font);
         self.tableWidget.setHorizontalHeaderItem(0, __qtablewidgetitem)
         __qtablewidgetitem1 = QTableWidgetItem()
-        __qtablewidgetitem1.setFont(font1);
+        __qtablewidgetitem1.setFont(font);
         self.tableWidget.setHorizontalHeaderItem(1, __qtablewidgetitem1)
         __qtablewidgetitem2 = QTableWidgetItem()
-        __qtablewidgetitem2.setFont(font1);
+        __qtablewidgetitem2.setFont(font);
         self.tableWidget.setHorizontalHeaderItem(2, __qtablewidgetitem2)
         __qtablewidgetitem3 = QTableWidgetItem()
-        __qtablewidgetitem3.setFont(font1);
+        __qtablewidgetitem3.setFont(font);
         self.tableWidget.setHorizontalHeaderItem(3, __qtablewidgetitem3)
         __qtablewidgetitem4 = QTableWidgetItem()
-        __qtablewidgetitem4.setFont(font1);
+        __qtablewidgetitem4.setFont(font);
         self.tableWidget.setHorizontalHeaderItem(4, __qtablewidgetitem4)
         __qtablewidgetitem5 = QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(5, __qtablewidgetitem5)
@@ -63,24 +63,48 @@ class Ui_listadados(object):
         __qtablewidgetitem7 = QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(7, __qtablewidgetitem7)
         self.tableWidget.setObjectName(u"tableWidget")
-        font2 = QFont()
-        font2.setPointSize(12)
-        self.tableWidget.setFont(font2)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
+        self.tableWidget.setSizePolicy(sizePolicy1)
+        font1 = QFont()
+        font1.setPointSize(12)
+        self.tableWidget.setFont(font1)
         self.tableWidget.setStyleSheet(u"background-color: rgb(255, 255, 255);")
         self.tableWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.tableWidget.setGridStyle(Qt.NoPen)
 
         self.verticalLayout.addWidget(self.tableWidget)
 
-        self.botaoExcluir = QPushButton(Form)
+        self.groupBox = QGroupBox(Form)
+        self.groupBox.setObjectName(u"groupBox")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.groupBox.sizePolicy().hasHeightForWidth())
+        self.groupBox.setSizePolicy(sizePolicy2)
+        self.horizontalLayout = QHBoxLayout(self.groupBox)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.pushButton = QPushButton(self.groupBox)
+        self.pushButton.setObjectName(u"pushButton")
+        font2 = QFont()
+        font2.setPointSize(10)
+        font2.setBold(True)
+        self.pushButton.setFont(font2)
+        self.pushButton.setStyleSheet(u"background-color: rgb(255, 255, 255);")
+
+        self.horizontalLayout.addWidget(self.pushButton)
+
+        self.botaoExcluir = QPushButton(self.groupBox)
         self.botaoExcluir.setObjectName(u"botaoExcluir")
-        font3 = QFont()
-        font3.setPointSize(10)
-        font3.setBold(True)
-        self.botaoExcluir.setFont(font3)
+        self.botaoExcluir.setFont(font2)
         self.botaoExcluir.setStyleSheet(u"background-color: rgb(255, 255, 255);")
 
-        self.verticalLayout.addWidget(self.botaoExcluir)
+        self.horizontalLayout.addWidget(self.botaoExcluir)
+
+
+        self.verticalLayout.addWidget(self.groupBox)
 
 
         self.retranslateUi(Form)
@@ -90,7 +114,8 @@ class Ui_listadados(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.label.setText(QCoreApplication.translate("Form", u"Lista de Produtos cadastrados", None))
+        self.title.setStyleSheet(QCoreApplication.translate("Form", u"font:700 22pt \"Segoe UI\"; padding-bottom:4px;", None))
+        self.title.setText(QCoreApplication.translate("Form", u"LISTA DE PRODUTOS CADASTRADOS", None))
         ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("Form", u"ID", None));
         ___qtablewidgetitem1 = self.tableWidget.horizontalHeaderItem(1)
@@ -107,6 +132,8 @@ class Ui_listadados(object):
         ___qtablewidgetitem6.setText(QCoreApplication.translate("Form", u"Oficial", None));
         ___qtablewidgetitem7 = self.tableWidget.horizontalHeaderItem(7)
         ___qtablewidgetitem7.setText(QCoreApplication.translate("Form", u"Reserva", None));
+        self.groupBox.setTitle("")
+        self.pushButton.setText(QCoreApplication.translate("Form", u"VOLTAR", None))
         self.botaoExcluir.setText(QCoreApplication.translate("Form", u"EXCLUIR", None))
     # retranslateUi
 

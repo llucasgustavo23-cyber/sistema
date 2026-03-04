@@ -15,7 +15,6 @@ class Login(QDialog, Ui_login):
           * QLineEdit de usuário  -> self.lineEdit
           * QLineEdit de senha    -> self.lineEdit_2
           * QPushButton Entrar    -> self.btnEntrar
-          * (Opcional) QPushButton Cadastrar -> self.btnCadastrar (não usado aqui)
       - Validação no MySQL via Database.checar_usuario(usuario, senha)
     """
     loggedIn = Signal(str)  # emite o "name" do usuário (para MainWindow)
@@ -27,6 +26,7 @@ class Login(QDialog, Ui_login):
 
         self.db = Database()
         self.usuario_logado = None
+        self.role = "visualizador"  # <- padrão caso DB não retorne
 
         # Assegura que o campo de senha está como Password (já está no UI, mas reforçamos):
         try:
@@ -36,12 +36,6 @@ class Login(QDialog, Ui_login):
 
         # Conexões dos botões
         self.btnEntrar.clicked.connect(self._tentar_login)
-
-        # Se quiser fechar/ocultar a opção de "Cadastrar" (não há cadastro no app)
-        # você pode ocultar o botão:
-        # self.btnCadastrar.hide()
-        # ou, se preferir, desconectar qualquer uso:
-        # self.btnCadastrar.clicked.disconnect()
 
         # Enter no campo de senha efetua login
         self.lineEdit_2.returnPressed.connect(self._tentar_login)
@@ -74,9 +68,12 @@ class Login(QDialog, Ui_login):
             return
 
         if result:
-            # result deve ter: {"name": "...", "user": "..."}
+            # result deve ter: {"name": "...", "user": "...", "role": "..."}
             nome_real = result.get("name") or result.get("user") or usuario
             self.usuario_logado = nome_real
+            # ✅ Etapa 4: capturar o perfil (role) retornado
+            self.role = result.get("role") or "visualizador"
+
             self.loggedIn.emit(nome_real)
             self.accept()  # fecha o QDialog com Accepted
         else:

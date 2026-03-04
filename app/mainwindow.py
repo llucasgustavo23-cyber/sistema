@@ -1,53 +1,59 @@
-from PySide6.QtWidgets import QMainWindow, QStackedWidget, QApplication
+# app/mainwindow.py
+from PySide6.QtWidgets import QMainWindow, QStackedWidget, QApplication, QMessageBox
 from PySide6.QtCore import Slot
 
 # Views normais
-from .views.login import Login 
+from .views.login import Login
 from .views.telainicial import TelaInicial
 from .views.relatorio import Relatorio
 from .views.menu import menu
 from .views.cadastro import Cadastro
 from .views.telakm import telakm
 from .views.modificar import Modificar
-
-# 👉 importa o provider central
+from .views.listardados import listardados
 from .views.sugestoes import SugestoesProvider, DTOBase
+from .views.usuario import usuario  
+from .database import Database
 
 
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle("Meu Sistema")
+        self.setWindowTitle("SCT")
 
-        # --- Provider central de sugestões (uma instância para o app inteiro)
+        # Provider
         self._sugestoes = SugestoesProvider()
 
-        # --- Stack ---
+        # DB compartilhado
+        self.db = Database()
+
+        # Stack
         self._stack = QStackedWidget(self)
         self.setCentralWidget(self._stack)
 
-        # --- Instanciar telas ---
+        # Instanciar telas do STACK (QWidgets)
         self.telainicial = TelaInicial()
         self.relatorio = Relatorio()
         self.menu = menu()
         self.telakm = telakm()
-        # 👉 Passa o provider para a tela Modificar
+        self.listardados = listardados()
         self.modificar = Modificar(self._sugestoes)
         self.cadastro = Cadastro()
 
-        # --- Adiciona ao stack ---
+        # ADICIONAR APENAS WIDGETS (não QDialogs!)
         self._stack.addWidget(self.telainicial)
         self._stack.addWidget(self.relatorio)
         self._stack.addWidget(self.cadastro)
         self._stack.addWidget(self.telakm)
         self._stack.addWidget(self.modificar)
         self._stack.addWidget(self.menu)
+        self._stack.addWidget(self.listardados)
 
-        # --- Conectar sinal do botão Login da TelaInicial ---
+        # Conectar tela inicial
         if hasattr(self.telainicial, "gotoLogin"):
             self.telainicial.gotoLogin.connect(self._abrir_login)
 
-        # --- Conectar sinais do menu ---
+        # Conectar menu -> navegação
         if hasattr(self.menu, "gotoCadastro"):
             self.menu.gotoCadastro.connect(self.show_cadastro)
         if hasattr(self.menu, "gotomodificar"):
@@ -56,30 +62,40 @@ class MainWindow(QMainWindow):
             self.menu.gotoRelatorio.connect(self.show_relatorio)
         if hasattr(self.menu, "gototelakm"):
             self.menu.gototelakm.connect(self.show_telakm)
+        if hasattr(self.menu, "gotolistardados"):
+            self.menu.gotolistardados.connect(self.show_listardados)
+        if hasattr(self.menu, "gotoinicio"):
+            self.menu.gotoInicio.connect(self.show_telainicial)
 
-        # --- Conectar sinais para voltar ao Menu ---
-        if hasattr(self.cadastro, "gotomenu"):
-            self.cadastro.gotomenu.connect(self.show_menu)
         if hasattr(self.modificar, "gotomenu"):
             self.modificar.gotomenu.connect(self.show_menu)
-        if hasattr(self.telakm, "gotomenu"):
-            self.telakm.gotomenu.connect(self.show_menu)
+        if hasattr(self.cadastro, "gotomenu"):
+            self.cadastro.gotomenu.connect(self.show_menu)
         if hasattr(self.relatorio, "gotomenu"):
             self.relatorio.gotomenu.connect(self.show_menu)
+        if hasattr(self.telakm, "gotomenu"):
+            self.telakm.gotomenu.connect(self.show_menu)
 
-        # --- (Opcional) Conectar cadastro/exclusão ao provider ---
+        # Botão “Cadastrar Usuário” -> abre QDialog usuario
+        if hasattr(self.menu, "gotousuario"):
+            self.menu.gotousuario.connect(self._abrir_usuario)
+
+        # SUGESTÕES
         self._conectar_provider_ao_fluxo()
 
         self._usuario = None
         self._autenticado = False
+        self._role = "visualizador"  
 
-        # --- MOSTRAR TELA INICIAL PRIMEIRO ---
+        # Inicial
         self.show_telainicial()
         self.resize(1280, 800)
         self.setMinimumSize(1000, 650)
         self.center_on_screen()
 
-    # --------------------------- Utilitário para centralizar ---------------------------
+    # --------------------------------------------------------
+    # CENTER
+    # --------------------------------------------------------
     def center_on_screen(self) -> None:
         screen = self.screen() or QApplication.primaryScreen()
         if not screen:
@@ -88,19 +104,18 @@ class MainWindow(QMainWindow):
         geo.moveCenter(screen.availableGeometry().center())
         self.move(geo.topLeft())
 
-    # ======================================================
-    #                 MÉTODOS DE LOGIN  
-    # ======================================================
+    # --------------------------------------------------------
+    # LOGIN
+    # --------------------------------------------------------
     def _abrir_login(self) -> None:
         dialog = Login(self)
-        if hasattr(dialog, "loggedIn"):
-            dialog.loggedIn.connect(self._on_logged_in)
+        dialog.loggedIn.connect(self._on_logged_in)
 
-        result = dialog.exec()
-        if result:
+        if dialog.exec():
             self._autenticado = True
-            usuario_nome = getattr(dialog, "usuario_logado", None)
-            self._usuario = usuario_nome or getattr(dialog, "usuario", None)
+            self._usuario = dialog.usuario_logado
+            self._role = getattr(dialog, "role", "visualizador")
+            self._aplicar_permissoes_menu()
             self.show_menu()
 
     @Slot(str)
@@ -108,100 +123,151 @@ class MainWindow(QMainWindow):
         self._usuario = nome
         self._autenticado = True
 
-    # ======================================================
-    #                 ↙ PROTEÇÃO DE TELAS  
-    # ======================================================
+    # --------------------------------------------------------
+    # PROTEÇÃO
+    # --------------------------------------------------------
     def _require_login(self) -> bool:
         if self._autenticado:
             return True
         self._abrir_login()
         return self._autenticado
 
-    # ======================================================
-    #                 ↙️  MÉTODOS DE NAVEGAÇÃO  ↘️
-    # ======================================================
+    def _deny(self, msg: str = "Acesso negado para seu perfil.") -> None:
+        QMessageBox.warning(self, "Permissão", msg)
+
+    def _require_role(self, allowed: set[str]) -> bool:
+        role = getattr(self, "_role", "visualizador")
+        if role in allowed:
+            return True
+        self._deny()
+        return False
+
+    # --------------------------------------------------------
+    # NAVEGAÇÃO — WIDGETS NO STACK (com RBAC)
+    # --------------------------------------------------------
     @Slot()
     def show_telainicial(self) -> None:
         self._stack.setCurrentWidget(self.telainicial)
 
     @Slot()
     def show_relatorio(self) -> None:
-        if not self._require_login():
-            return
+        if not self._require_login(): return
+        # liberado para todos os perfis
         self._stack.setCurrentWidget(self.relatorio)
 
     @Slot()
     def show_modificar(self) -> None:
-        if not self._require_login():
-            return
+        if not self._require_login(): return
+        # admin e operador
+        if not self._require_role({"admin", "operador"}): return
         self._stack.setCurrentWidget(self.modificar)
 
     @Slot()
     def show_telakm(self) -> None:
-        if not self._require_login():
-            return
+        if not self._require_login(): return
+        # admin e operador
+        if not self._require_role({"admin", "operador"}): return
         self._stack.setCurrentWidget(self.telakm)
 
     @Slot()
     def show_menu(self) -> None:
-        if not self._require_login():
-            return
+        if not self._require_login(): return
         self._stack.setCurrentWidget(self.menu)
 
     @Slot()
     def show_cadastro(self) -> None:
-        if not self._require_login():
-            return
+        if not self._require_login(): return
+        # somente admin
+        if not self._require_role({"admin"}): return
         self._stack.setCurrentWidget(self.cadastro)
 
-    # ======================================================
-    #       Provider ↔️ fluxo de cadastro/exclusão
-    # ======================================================
+    @Slot()
+    def show_listardados(self) -> None:
+        if not self._require_login(): return
+        # liberado para todos os perfis
+        self._stack.setCurrentWidget(self.listardados)
+
+    # --------------------------------------------------------
+    # QDIALOG DE USUÁRIO (cadastro com perfil)
+    # --------------------------------------------------------
+    def _abrir_usuario(self) -> None:
+        if not self._require_login():
+            return
+        # Apenas admin pode criar usuários
+        if not self._require_role({"admin"}):
+            return
+
+        dlg = usuario(self)
+        dlg.submitted.connect(self._on_usuario_cadastrado)
+
+        if dlg.exec():
+            self.show_menu()
+
+    @Slot(str, str, str)
+    def _on_usuario_cadastrado(self, usuario_txt: str, senha_txt: str, role: str):
+    
+        try:
+            self.db.criar_usuario(usuario_txt, senha_txt, role)
+            QMessageBox.information(self, "Usuários",
+                                    f"Usuário '{usuario_txt}' criado com perfil '{role}'.")
+        except Exception as e:
+            QMessageBox.critical(self, "Usuários", f"Falha ao criar usuário: {e}")
+
+        self.show_menu()
+
+    # --------------------------------------------------------
+    # RBAC: Habilitar/Desabilitar botões do menu conforme o perfil
+    # --------------------------------------------------------
+    def _aplicar_permissoes_menu(self) -> None:
+ 
+        role = getattr(self, "_role", "visualizador")
+
+        # Mapear botões do menu (checar existência por segurança)
+        btns = {
+            "cadastro_amb": getattr(self.menu, "btnCadastroAmb", None),
+            "modificar":    getattr(self.menu, "btnModificarAmb", None),
+            "relatorio":    getattr(self.menu, "btnRelatorio", None),
+            "inserir":      getattr(self.menu, "btnInserirDados", None),
+            "lista":        getattr(self.menu, "pushButton_2", None),  
+            "usuario":      getattr(self.menu, "pushButton", None),   
+        }
+
+        def set_allowed(allowed_keys: set[str]) -> None:
+            for key, btn in btns.items():
+                if btn:
+                    btn.setEnabled(key in allowed_keys)
+
+        if role == "admin":
+            # tudo habilitado
+            set_allowed(set(btns.keys()))
+            return
+
+        if role == "operador":
+            allowed = {"modificar", "relatorio", "inserir", "lista"}
+            set_allowed(allowed)
+            return
+
+        # visualizador
+        allowed = {"relatorio", "lista"}
+        set_allowed(allowed)
+
+    
     def _conectar_provider_ao_fluxo(self) -> None:
-        """
-        Conecta sinais de cadastro/exclusão ao provider de sugestões.
-        Ajuste os nomes dos sinais conforme sua tela de cadastro.
-        """
-        # 1) Ao cadastrar uma ambulância, alimenta o provider incrementalmente
         if hasattr(self.cadastro, "submitted"):
             self.cadastro.submitted.connect(self._on_cadastrou_ambulancia)
 
-        # 2) Ao excluir, recarrega tudo do DAO (evita remover valores ainda usados)
-        #    Se sua tela de relatório/menu expõe um sinal 'excluida' com o id, conecte aqui:
         if hasattr(self.relatorio, "excluida"):
             self.relatorio.excluida.connect(self._on_excluiu_ambulancia)
 
-        # 3) (Opcional) Carrega sugestões na inicialização a partir do DAO
-        try:
-            dao = getattr(self, "dao", None) or getattr(self, "_dao", None)
-            if dao and hasattr(dao, "listar_todas"):
-                todas = dao.listar_todas()
-                self._sugestoes.load_from(
-                    DTOBase(a.placa, a.chassi, a.cnes, a.denominacao) for a in todas
-                )
-        except Exception as e:
-            print("[Sugestões] Aviso: não foi possível carregar sugestões iniciais:", e)
-
     @Slot(object)
     def _on_cadastrou_ambulancia(self, dto):
-        """dto deve ter atributos: placa, chassi, cnes, denominacao"""
         try:
-            self._sugestoes.on_cadastrada(DTOBase(dto.placa, dto.chassi, dto.cnes, dto.denominacao))
+            self._sugestoes.on_cadastrada(
+                DTOBase(dto.placa, dto.chassi, dto.cnes, dto.denominacao)
+            )
         except Exception as e:
-            print("[Sugestões] Falha ao adicionar sugestão após cadastro:", e)
+            print("[Sugestões] Falha:", e)
 
     @Slot(object)
     def _on_excluiu_ambulancia(self, _id):
-        """
-        Após excluir no banco, recarrega o provider a partir do DAO.
-        Ajuste para chamar seu DAO real.
-        """
-        try:
-            dao = getattr(self, "dao", None) or getattr(self, "_dao", None)
-            if dao and hasattr(dao, "listar_todas"):
-                todas = dao.listar_todas()
-                self._sugestoes.on_excluida_recarregar(
-                    DTOBase(a.placa, a.chassi, a.cnes, a.denominacao) for a in todas
-                )
-        except Exception as e:
-            print("[Sugestões] Falha ao recarregar sugestões após exclusão:", e)
+        print("Ambulância excluída")

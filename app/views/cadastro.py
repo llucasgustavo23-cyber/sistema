@@ -32,17 +32,15 @@ class Cadastro(QWidget, Ui_cadastro):
         self.setWindowTitle("Cadastro de Ambulâncias")
 
         # --- Aliases conforme o seu .ui ---
-        # lbl_modelo -> "Placa"  => QLineEdit correto para PLACA é self.lineEdit
-        # lbl_placa  -> "Modelo" => QComboBox correto para MODELO é self.comboBox
-        self.placa_edit = self.lineEdit            # QLineEdit de PLACA
-        self.modelo_combo = self.comboBox          # QComboBox de MODELO
-        self.chassi_edit = self.chassi             # QLineEdit chassi
-        self.tipo_combo = self.tipo                # QComboBox tipo de aquisição
-        self.data_edit = self.data                 # QDateEdit
-        self.ano_spin = self.ano                   # QSpinBox
-        self.cnes_edit = self.cnes                 # QLineEdit cnes
-        self.denominacao_edit = self.denominacao   # QLineEdit denominação
-
+       
+        self.placa_edit = self.lineEdit            
+        self.modelo_combo = self.comboBox          
+        self.chassi_edit = self.chassi           
+        self.tipo_combo = self.tipo                
+        self.data_edit = self.data                 
+        self.ano_spin = self.ano                   
+        self.cnes_edit = self.cnes                 
+        self.denominacao_edit = self.denominacao   
         # --- Autocomplete local (sem provider) ---
         self._model_placa = QStringListModel([], self)
         self._model_chassi = QStringListModel([], self)
@@ -93,11 +91,7 @@ class Cadastro(QWidget, Ui_cadastro):
         self.cnes_edit.setCompleter(mk(self._model_cnes))
         self.denominacao_edit.setCompleter(mk(self._model_denominacao))
 
-        # Se quiser autocomplete no combo de MODELO (tornando editável):
-        # self.modelo_combo.setEditable(True)
-        # self._model_modelo = QStringListModel(["Fiat Ducato", "Mercedes Sprinter"], self)
-        # self.modelo_combo.setCompleter(mk(self._model_modelo))
-
+       
     # ---- Métodos públicos para alimentar as sugestões de fora (ex.: MainWindow) ----
     def atualizar_opcoes_placa(self, lista: list[str]):
         self._model_placa.setStringList(lista or [])
@@ -145,13 +139,10 @@ class Cadastro(QWidget, Ui_cadastro):
             denominacao=self.denominacao_edit.text().strip(),
         )
 
-        # Emite para quem quiser persistir/sincronizar
         self.submitted.emit(dto)
 
-        # Feedback opcional
         QMessageBox.information(self, "Sucesso", "Cadastro salvo com sucesso!")
 
-        # Voltar ao menu
         self.gotomenu.emit()
 
     def on_buttonBox_rejected(self):

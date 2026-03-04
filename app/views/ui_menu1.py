@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MENU1.ui'
+## Form generated from reading UI file 'MENU1.UI'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.2
 ##
@@ -180,7 +180,7 @@ class Ui_menu(object):
 "alternate-background-color: rgb(170, 0, 0);\n"
 "border-color: rgb(170, 0, 0);")
         icon = QIcon()
-        icon.addFile(u"../../../Downloads/pngtree-vector-house-icon-png-image_889411.jpg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u"../../../Downloads/\u00edcone-do-vetor-da-casa-ilustra\u00e7\u00e3o-home-preto-e-branco-\u00edcone-linear-cont\u00ednuo-da-casa-para-aplica\u00e7\u00f5es-m\u00f3veis-93005323.webp", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnInicio.setIcon(icon)
         self.btnInicio.setIconSize(QSize(30, 30))
         self.btnInicio.setAutoDefault(False)
@@ -202,9 +202,10 @@ class Ui_menu(object):
         self.btnConfig.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(0, 0, 0);")
         icon1 = QIcon()
-        icon1.addFile(u"../../../Downloads/Designer.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u"../../../Downloads/Designer (9).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnConfig.setIcon(icon1)
         self.btnConfig.setIconSize(QSize(40, 30))
+        self.btnConfig.setCheckable(False)
         self.btnConfig.setFlat(False)
 
         self.menuLayout.addWidget(self.btnConfig)
@@ -215,6 +216,13 @@ class Ui_menu(object):
         self.pushButton.setStyleSheet(u"color: rgb(255, 255, 255);")
 
         self.menuLayout.addWidget(self.pushButton)
+
+        self.pushButton_2 = QPushButton(self.menuLateral)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.pushButton_2.setFont(font1)
+        self.pushButton_2.setStyleSheet(u"color: rgb(255, 255, 255);")
+
+        self.menuLayout.addWidget(self.pushButton_2)
 
         self.menuSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -308,6 +316,7 @@ class Ui_menu(object):
         self.btnInicio.setText(QCoreApplication.translate("Form", u"In\u00edcio", None))
         self.btnConfig.setText(QCoreApplication.translate("Form", u"Ajuste", None))
         self.pushButton.setText(QCoreApplication.translate("Form", u"Cadastrar Usu\u00e1rio", None))
+        self.pushButton_2.setText(QCoreApplication.translate("Form", u"Dados Ambul\u00e2ncias", None))
         self.btnCadastroAmb.setText(QCoreApplication.translate("Form", u"CADASTRO DE AMBUL\u00c2NCIA", None))
         self.btnModificarAmb.setText(QCoreApplication.translate("Form", u"MODIFICAR AMBUL\u00c2NCIA", None))
         self.btnRelatorio.setText(QCoreApplication.translate("Form", u"RELAT\u00d3RIO", None))
