@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Signal
-from .ui_menu1 import Ui_menu
+from .ui_menu import Ui_menu
 
 
 class menu(QWidget, Ui_menu):

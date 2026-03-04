@@ -916,7 +916,7 @@ border-color: rgb(170, 0, 0);</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/ícone-do-vetor-da-casa-ilustração-home-preto-e-branco-ícone-linear-contínuo-da-casa-para-aplicações-móveis-93005323.webp</normaloff>../../../Downloads/ícone-do-vetor-da-casa-ilustração-home-preto-e-branco-ícone-linear-contínuo-da-casa-para-aplicações-móveis-93005323.webp</iconset>
+          <normaloff>../../../Downloads/pngtree-vector-house-icon-png-image_889411.jpg</normaloff>../../../Downloads/pngtree-vector-house-icon-png-image_889411.jpg</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -969,7 +969,7 @@ background-color: rgb(0, 0, 0);</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../../Downloads/Designer (9).png</normaloff>../../../Downloads/Designer (9).png</iconset>
+          <normaloff>../../../Downloads/Designer.png</normaloff>../../../Downloads/Designer.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -979,6 +979,24 @@ background-color: rgb(0, 0, 0);</string>
         </property>
         <property name="flat">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Cadastrar Usuário</string>
         </property>
        </widget>
       </item>

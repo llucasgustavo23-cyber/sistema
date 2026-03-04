@@ -1,11 +1,13 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
-from PySide6.QtCore import Signal, QDate
-from PySide6.QtWidgets import QWidget, QMessageBox, QApplication, QDialogButtonBox
+from PySide6.QtCore import Signal, QDate, Qt, QStringListModel
+from PySide6.QtWidgets import QWidget, QMessageBox, QApplication, QDialogButtonBox, QCompleter
 from PySide6.QtGui import QCloseEvent
-from ui_telademodificar import Ui_modificar
+from ui_modificar import Ui_modificar
+from sugestoes import SugestoesProvider  # <<-- provider central
 import sys
+
 
 @dataclass
 class AmbulanciaDTO:
@@ -20,24 +22,34 @@ class AmbulanciaDTO:
 
 
 class Modificar(QWidget, Ui_modificar):
-    gotomenu = Signal()                       
+    gotomenu = Signal()                      
     submitted = Signal(AmbulanciaDTO)         
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, provider: SugestoesProvider, parent: Optional[QWidget] = None):
         super().__init__(parent)
+        self._provider = provider  # <<-- injeta o provider
         self.setupUi(self)
         self.setWindowTitle("Modificar Dados da Ambulância")
 
         # Aliases conforme seu .ui
-        self.placa = self.lineEdit           
-        self.modelo_combo = self.comboBox     
+        self.placa = self.lineEdit            
+        self.modelo_combo = self.comboBox
+
+        # Models locais (serão alimentados pelo provider)
+        self._model_placa = QStringListModel([], self)
+        self._model_chassi = QStringListModel([], self)
+        self._model_cnes = QStringListModel([], self)
+        self._model_denominacao = QStringListModel([], self)
+
+        # >>> Autocomplete nos campos (completares + primeira sincronização)
+        self._setup_completers()
+        self._provider.suggestions_changed.connect(self._sync_sugestoes_deste_form)
+        self._sync_sugestoes_deste_form()
 
         # -------------------- Conexões dos botões OK/Cancel --------------------
-        # 1) Conexões padrão (funcionam se o buttonBox tiver roles Ok/Cancel)
         self.buttonBox.accepted.connect(self.on_buttonBox_accepted)
         self.buttonBox.rejected.connect(self.on_buttonBox_rejected)
 
-        # 2) Opção 1 (garantia): conecta diretamente os botões Ok/Cancel
         try:
             ok_btn = self.buttonBox.button(QDialogButtonBox.Ok)
             cancel_btn = self.buttonBox.button(QDialogButtonBox.Cancel)
@@ -63,6 +75,36 @@ class Modificar(QWidget, Ui_modificar):
         self.ano.valueChanged.connect(lambda _: self.ano.setStyleSheet(""))
         self.data.dateChanged.connect(lambda _: self.data.setStyleSheet(""))
 
+    # -------------------- AUTOCOMPLETE (primeira opção com provider) --------------------
+
+    def _setup_completers(self):
+        def fazocomplete(model: QStringListModel) -> QCompleter:
+            comp = QCompleter(model, self)
+            comp.setCaseSensitivity(Qt.CaseInsensitive)
+            comp.setFilterMode(Qt.MatchContains)  # sugestões que CONTÊM o texto
+            comp.setCompletionMode(QCompleter.PopupCompletion)
+            return comp
+
+        self.placa.setCompleter(fazocomplete(self._model_placa))
+        self.chassi.setCompleter(fazocomplete(self._model_chassi))
+        self.cnes.setCompleter(fazocomplete(self._model_cnes))
+        self.denominacao.setCompleter(fazocomplete(self._model_denominacao))
+
+        # (Opcional) Autocomplete no ComboBox de modelo — torne-o editável e crie um model dedicado
+        # self.modelo_combo.setEditable(True)
+        # self._model_modelo = QStringListModel(["Fiat Ducato", "Mercedes Sprinter"], self)
+        # self.modelo_combo.setCompleter(fazocomplete(self._model_modelo))
+
+    def _sync_sugestoes_deste_form(self):
+        """
+        Atualiza os QStringListModel deste form com o estado atual do provider.
+        É chamado na criação e sempre que o provider emitir suggestions_changed.
+        """
+        self._model_placa.setStringList(self._provider.placas())
+        self._model_chassi.setStringList(self._provider.chassis())
+        self._model_cnes.setStringList(self._provider.cnes())
+        self._model_denominacao.setStringList(self._provider.denominacoes())
+
     # -------------------- OK / CANCELAR --------------------
 
     def on_buttonBox_accepted(self):
@@ -72,7 +114,6 @@ class Modificar(QWidget, Ui_modificar):
 
         campos_invalidos = []
 
-        # Valida obrigatórios
         if not self.placa.text().strip():
             campos_invalidos.append(self.placa)
         if not self.chassi.text().strip():
@@ -88,7 +129,6 @@ class Modificar(QWidget, Ui_modificar):
             QMessageBox.warning(self, "Campos obrigatórios", "Preencha os campos destacados.")
             return
 
-        # Monta DTO
         dto = AmbulanciaDTO(
             modelo=self.modelo_combo.currentText().strip(),
             placa=self.placa.text().strip(),
@@ -116,7 +156,7 @@ class Modificar(QWidget, Ui_modificar):
     def closeEvent(self, event: QCloseEvent) -> None:
         if self.parent() is not None:
             self.gotomenu.emit()
-            event.ignore()  
+            event.ignore()  # não fecha se for "filho" de outro widget
         else:
             event.accept()
 
@@ -149,13 +189,15 @@ class Modificar(QWidget, Ui_modificar):
                 w.setStyleSheet(estilo_line)
 
 
-# # Exemplo de uso local
-# def on_submitted(dto: AmbulanciaDTO):
-#     print("Dados salvos:", dto)
-
+# Execução isolada para testar a tela com provider vazio
 # if __name__ == "__main__":
 #     app = QApplication(sys.argv)
-#     w = Modificar()
-#     w.submitted.connect(on_submitted)
+#     from sugestoes import DTOBase, SugestoesProvider
+
+#     provider = SugestoesProvider()
+#     # Exemplo: carga inicial (substituir por leitura real do DAO)
+#     # provider.load_from([DTOBase("ABC1D23", "9BW...", "1234567", "Ambulância Tipo A")])
+
+#     w = Modificar(provider)
 #     w.show()
 #     sys.exit(app.exec())

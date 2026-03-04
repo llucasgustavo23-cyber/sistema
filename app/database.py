@@ -21,7 +21,7 @@ class Database:
         return self.connection
 
     # ---------------------------
-    # INSERIR USUÁRIO (admin cria)
+    # INSERIR USUÁRIO
     # ---------------------------
     def insert_user(self, usuario, senha):
         cursor = None
@@ -78,17 +78,17 @@ class Database:
     # ---------------------------
     # CADASTRAR AMBULÂNCIA
     # ---------------------------
-    def cadastra_ambulan(self, chassi, placa, ano, data_aquisicao):
+    def cadastra_ambulan(self, chassi, placa, idmodelo,ano,for_aquisicao, data_aquisicao,viaturaoficiais,viaturareserva):
         cursor = None
         try:
             self.conectar()
             cursor = self.connection.cursor()
 
             sql = """
-                INSERT INTO ambulancia (chassi, placa, ano, data_aquisicao)
+                INSERT INTO ambulancia (chassi, placa,idmodelo, ano, for_aquisicao, data_aquisicao, viaturaoficiais,viaturareserva)
                 VALUES (%s, %s, %s, %s)
             """
-            cursor.execute(sql, (chassi, placa, ano, data_aquisicao))
+            cursor.execute(sql, (chassi, placa,idmodelo,ano,for_aquisicao, data_aquisicao,viaturaoficiais,viaturareserva))
             self.connection.commit()
             return True
 
@@ -105,12 +105,12 @@ class Database:
     # ---------------------------
     # ATUALIZAR AMBULÂNCIA
     # ---------------------------
-    def update_ambulancia(self, chassi, placa=None, ano=None, data_aquisicao=None):
+    def update_ambulancia(self, chassi,idmodelo=None, placa=None, ano=None, data_aquisicao=None,):
         """
         Atualiza campos da ambulância identificada por 'chassi'.
         Só atualiza os campos que não forem None.
         """
-        if not any([placa, ano, data_aquisicao]):
+        if not any([placa, ano,idmodelo, data_aquisicao,]):
             return False
 
         cursor = None
@@ -129,9 +129,26 @@ class Database:
                 sets.append("ano = %s")
                 params.append(ano)
 
+            if idmodelo is not None:
+                sets.append("idmodelo = %s")
+                params.append(idmodelo)
+
             if data_aquisicao is not None:
                 sets.append("data_aquisicao = %s")
                 params.append(data_aquisicao)
+
+            # if idFor_aquisicao is not None:
+            #     sets.append("for_aquisicao= %s")
+            #     params.append()
+            
+            # if viaturasoficais is not None:
+            #     sets.append("viaturasoficias = %s")
+            #     params.append(viaturasoficais)
+            
+            # if viaturareserva is not None:
+            #     sets.append("viaturareserva= %s")
+            #     params.append(viaturareserva)
+
 
             params.append(chassi)
 

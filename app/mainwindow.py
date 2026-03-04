@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QMainWindow, QStackedWidget, QApplication
 from PySide6.QtCore import Slot
 
 # Views normais
-from .views.login import Login              # QDialog
+from .views.login import Login 
 from .views.telainicial import TelaInicial
 from .views.relatorio import Relatorio
 from .views.menu import menu
@@ -10,11 +10,17 @@ from .views.cadastro import Cadastro
 from .views.telakm import telakm
 from .views.modificar import Modificar
 
+# 👉 importa o provider central
+from .views.sugestoes import SugestoesProvider, DTOBase
+
 
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Meu Sistema")
+
+        # --- Provider central de sugestões (uma instância para o app inteiro)
+        self._sugestoes = SugestoesProvider()
 
         # --- Stack ---
         self._stack = QStackedWidget(self)
@@ -23,10 +29,11 @@ class MainWindow(QMainWindow):
         # --- Instanciar telas ---
         self.telainicial = TelaInicial()
         self.relatorio = Relatorio()
-        self.cadastro = Cadastro()
         self.menu = menu()
         self.telakm = telakm()
-        self.modificar = Modificar()
+        # 👉 Passa o provider para a tela Modificar
+        self.modificar = Modificar(self._sugestoes)
+        self.cadastro = Cadastro()
 
         # --- Adiciona ao stack ---
         self._stack.addWidget(self.telainicial)
@@ -37,7 +44,6 @@ class MainWindow(QMainWindow):
         self._stack.addWidget(self.menu)
 
         # --- Conectar sinal do botão Login da TelaInicial ---
-        # Quando clicar no botão de login → abre o QDialog Login
         if hasattr(self.telainicial, "gotoLogin"):
             self.telainicial.gotoLogin.connect(self._abrir_login)
 
@@ -61,24 +67,20 @@ class MainWindow(QMainWindow):
         if hasattr(self.relatorio, "gotomenu"):
             self.relatorio.gotomenu.connect(self.show_menu)
 
-        # --- Estado de login ---
+        # --- (Opcional) Conectar cadastro/exclusão ao provider ---
+        self._conectar_provider_ao_fluxo()
+
         self._usuario = None
         self._autenticado = False
 
         # --- MOSTRAR TELA INICIAL PRIMEIRO ---
         self.show_telainicial()
-
-        # ========= Opção 1: tamanho inicial + centralizar + tamanho mínimo =========
-        self.resize(1280, 800)          # tamanho inicial ao abrir
-        self.setMinimumSize(1000, 650)  # evita janela minúscula
-        self.center_on_screen()         # centraliza na tela
-        # ==========================================================================
+        self.resize(1280, 800)
+        self.setMinimumSize(1000, 650)
+        self.center_on_screen()
 
     # --------------------------- Utilitário para centralizar ---------------------------
     def center_on_screen(self) -> None:
-        """
-        Centraliza a MainWindow na tela atual.
-        """
         screen = self.screen() or QApplication.primaryScreen()
         if not screen:
             return
@@ -87,26 +89,19 @@ class MainWindow(QMainWindow):
         self.move(geo.topLeft())
 
     # ======================================================
-    #                 ↙️  MÉTODOS DE LOGIN  ↘️
+    #                 MÉTODOS DE LOGIN  
     # ======================================================
     def _abrir_login(self) -> None:
-        """Abre o QDialog somente quando o usuário clicar em Login."""
         dialog = Login(self)
         if hasattr(dialog, "loggedIn"):
             dialog.loggedIn.connect(self._on_logged_in)
 
-        result = dialog.exec()  # bloqueia até fechar
-
+        result = dialog.exec()
         if result:
             self._autenticado = True
-            # Se o seu Login define self.usuario_logado, use-o:
             usuario_nome = getattr(dialog, "usuario_logado", None)
-            # Caso contrário, tente 'usuario' como fallback:
             self._usuario = usuario_nome or getattr(dialog, "usuario", None)
-            self.show_menu()  # Vá para o menu depois do login
-        else:
-            # Login cancelado → fica na TelaInicial
-            pass
+            self.show_menu()
 
     @Slot(str)
     def _on_logged_in(self, nome: str):
@@ -114,10 +109,9 @@ class MainWindow(QMainWindow):
         self._autenticado = True
 
     # ======================================================
-    #                 ↙️  PROTEÇÃO DE TELAS  ↘️
+    #                 ↙ PROTEÇÃO DE TELAS  
     # ======================================================
     def _require_login(self) -> bool:
-        """Protege as telas — só acessa se estiver logado."""
         if self._autenticado:
             return True
         self._abrir_login()
@@ -159,3 +153,55 @@ class MainWindow(QMainWindow):
         if not self._require_login():
             return
         self._stack.setCurrentWidget(self.cadastro)
+
+    # ======================================================
+    #       Provider ↔️ fluxo de cadastro/exclusão
+    # ======================================================
+    def _conectar_provider_ao_fluxo(self) -> None:
+        """
+        Conecta sinais de cadastro/exclusão ao provider de sugestões.
+        Ajuste os nomes dos sinais conforme sua tela de cadastro.
+        """
+        # 1) Ao cadastrar uma ambulância, alimenta o provider incrementalmente
+        if hasattr(self.cadastro, "submitted"):
+            self.cadastro.submitted.connect(self._on_cadastrou_ambulancia)
+
+        # 2) Ao excluir, recarrega tudo do DAO (evita remover valores ainda usados)
+        #    Se sua tela de relatório/menu expõe um sinal 'excluida' com o id, conecte aqui:
+        if hasattr(self.relatorio, "excluida"):
+            self.relatorio.excluida.connect(self._on_excluiu_ambulancia)
+
+        # 3) (Opcional) Carrega sugestões na inicialização a partir do DAO
+        try:
+            dao = getattr(self, "dao", None) or getattr(self, "_dao", None)
+            if dao and hasattr(dao, "listar_todas"):
+                todas = dao.listar_todas()
+                self._sugestoes.load_from(
+                    DTOBase(a.placa, a.chassi, a.cnes, a.denominacao) for a in todas
+                )
+        except Exception as e:
+            print("[Sugestões] Aviso: não foi possível carregar sugestões iniciais:", e)
+
+    @Slot(object)
+    def _on_cadastrou_ambulancia(self, dto):
+        """dto deve ter atributos: placa, chassi, cnes, denominacao"""
+        try:
+            self._sugestoes.on_cadastrada(DTOBase(dto.placa, dto.chassi, dto.cnes, dto.denominacao))
+        except Exception as e:
+            print("[Sugestões] Falha ao adicionar sugestão após cadastro:", e)
+
+    @Slot(object)
+    def _on_excluiu_ambulancia(self, _id):
+        """
+        Após excluir no banco, recarrega o provider a partir do DAO.
+        Ajuste para chamar seu DAO real.
+        """
+        try:
+            dao = getattr(self, "dao", None) or getattr(self, "_dao", None)
+            if dao and hasattr(dao, "listar_todas"):
+                todas = dao.listar_todas()
+                self._sugestoes.on_excluida_recarregar(
+                    DTOBase(a.placa, a.chassi, a.cnes, a.denominacao) for a in todas
+                )
+        except Exception as e:
+            print("[Sugestões] Falha ao recarregar sugestões após exclusão:", e)
