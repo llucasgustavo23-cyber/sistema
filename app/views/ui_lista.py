@@ -115,7 +115,7 @@ class Ui_listardados(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.title.setStyleSheet(QCoreApplication.translate("Form", u"font:700 22pt \"Segoe UI\"; padding-bottom:4px;", None))
-        self.title.setText(QCoreApplication.translate("Form", u"LISTA DE PRODUTOS CADASTRADOS", None))
+        self.title.setText(QCoreApplication.translate("Form", u"LISTA DE AMVULÂNCIAS CADASTRADAS", None))
         ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("Form", u"ID", None));
         ___qtablewidgetitem1 = self.tableWidget.horizontalHeaderItem(1)

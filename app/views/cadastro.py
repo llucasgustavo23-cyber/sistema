@@ -25,7 +25,7 @@ class AmbulanciaDTO:
 class Cadastro(QWidget, Ui_cadastro):
     gotomenu = Signal()
     submitted = Signal(AmbulanciaDTO)
-
+    gotocadastro = Signal()
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setupUi(self)
@@ -143,7 +143,7 @@ class Cadastro(QWidget, Ui_cadastro):
 
         QMessageBox.information(self, "Sucesso", "Cadastro salvo com sucesso!")
 
-        self.gotomenu.emit()
+        self.gotocadastro.emit()
 
     def on_buttonBox_rejected(self):
         """Cancelar → voltar para o Menu (sem fechar o widget)."""

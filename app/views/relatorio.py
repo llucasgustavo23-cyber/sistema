@@ -1,11 +1,7 @@
 # app/views/relatorio.py
 from PySide6.QtWidgets import QWidget, QMessageBox, QTableWidgetItem
 from PySide6.QtCore import Signal, QDate
-
-# IMPORTA a UI gerada pelo Designer
 from .ui_relatorio import Ui_relatorio
-
-
 class Relatorio(QWidget, Ui_relatorio):
     gotomenu = Signal()
 
@@ -33,7 +29,7 @@ class Relatorio(QWidget, Ui_relatorio):
 
         
         # if hasattr(self, "btnGerar"):
-        #     self.btnGerar.clicked.connect(self._carregar)
+        #      self.btnGerar.clicked.connect(self._carregar)
 
         
         # if hasattr(self, "btnExportarPDF"):

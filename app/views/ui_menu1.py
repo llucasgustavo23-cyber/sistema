@@ -247,7 +247,7 @@ class Ui_menu(object):
         self.btnCadastroAmb.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
 "color: rgb(255, 255, 255);")
         icon2 = QIcon()
-        icon2.addFile(u"../../../Downloads/Designer (5).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u"c:/Users/61348016/Downloads/Designer (5).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off) #c:\Users\61348016\Downloads\Designer (5).png
         self.btnCadastroAmb.setIcon(icon2)
         self.btnCadastroAmb.setIconSize(QSize(128, 128))
         self.btnCadastroAmb.setFlat(False)
@@ -263,7 +263,7 @@ class Ui_menu(object):
         self.btnModificarAmb.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
 "color: rgb(255, 255, 255);")
         icon3 = QIcon()
-        icon3.addFile(u"../../../Downloads/Designer (6).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon3.addFile(u"c:/Users/61348016/Downloads/Designer (6).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnModificarAmb.setIcon(icon3)
         self.btnModificarAmb.setIconSize(QSize(128, 128))
 
@@ -278,7 +278,7 @@ class Ui_menu(object):
         self.btnRelatorio.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
 "color: rgb(255, 255, 255);")
         icon4 = QIcon()
-        icon4.addFile(u"../../../Downloads/Designer (7).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon4.addFile(u"c:/Users/61348016/Downloads/Designer (7).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnRelatorio.setIcon(icon4)
         self.btnRelatorio.setIconSize(QSize(128, 128))
 
@@ -293,7 +293,7 @@ class Ui_menu(object):
         self.btnInserirDados.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
 "color: rgb(255, 255, 255);")
         icon5 = QIcon()
-        icon5.addFile(u"../../../Downloads/Designer (8).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon5.addFile(u"c:/Users/61348016/Downloads/Designer (8).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnInserirDados.setIcon(icon5)
         self.btnInserirDados.setIconSize(QSize(128, 128))
 

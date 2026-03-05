@@ -37,7 +37,7 @@ def _hash_password(password: str) -> tuple[str, str, int, str]:
     )
 
 
-def _verify_password(password: str, algo: str, salt_b64: str, iterations: int, hash_b64: str) -> bool:
+def verifica_senha(password: str, algo: str, salt_b64: str, iterations: int, hash_b64: str) -> bool:
    
     if isinstance(password, str):
         password = password.encode("utf-8")
@@ -98,7 +98,7 @@ class Database:
                 if not row:
                     return None
 
-                ok = _verify_password(
+                ok = verifica_senha(
                     senha,
                     row["algo"],
                     row["salt"],
@@ -237,8 +237,39 @@ class Database:
                 return cur.fetchone() is not None
         finally:
             conn.close()
+    
+    def cadastrar_ambulancia(self, chassi: str, placa: str,idmodelo: int, ano: str , idFor_aquisicao: int,data_aquisicao: int, idviaturasoficiais: int = None, idviaturareserva: int = None, Denominacao: int =None, CNES: int = None) -> int:
+     
+        if self._chassi_existe(chassi):
+            raise ValueError("Ambulãncia já cadastrada.")
 
+       
+        sql = """
+            INSERT INTO ambulancia (chassi, placa ,idmodelo ,ano , idFor_aquisicao, data_aquisicao, idviaturasoficiais,idviaturareserva )
+            VALUES (%s, %s, %s, %s, %s, %s,%s,%s)
+        """
+        sql = """"
+           INSERT INTO viaturareserva (Denominacao) 
+           VALUES (%s)
+        """
+        sql = """
+            INSERT INTO viaturasoficiais (Denominacao,CNES)
+            VALUES (%s,%s)
+        """
+        vals = (chassi, placa, idmodelo, ano, idFor_aquisicao, data_aquisicao, idviaturasoficiais, idviaturareserva, Denominacao, CNES)
 
+        conn = self._get_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(sql, vals)
+                new_id = cur.lastrowid
+            conn.commit()
+            return int(new_id)
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
 #tela inicial
 
 
