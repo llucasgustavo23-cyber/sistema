@@ -10,23 +10,7 @@ from .ui_usuario import Ui_usuario
 
 
 class usuario(QDialog, Ui_usuario):
-    """
-    QDialog de cadastro de usuário baseado no UI 'Ui_usuario' (não altera o .ui).
-
-    Widgets esperados (do UI):
-      - self.lineEdit      -> QLineEdit (usuário)
-      - self.lineEdit_2    -> QLineEdit (senha - Password)
-      - self.btnEntrar     -> QPushButton ("Cadastrar")
-
-    Novidades (Etapa 5):
-      - Adiciona combo de PERFIL/ROLE sem mexer no UI (injetado no formLayout)
-      - Emite (usuario, senha, role) no sinal 'submitted'
-      - Fecha automaticamente no sucesso (accept())
-
-    Sinais:
-      - submitted(str, str, str): (usuario, senha, role)
-      - gotomenu(): opcional; caso deseje voltar ao menu externamente
-    """
+    
     submitted = Signal(str, str, str)
     gotomenu = Signal()
 
@@ -134,11 +118,6 @@ class usuario(QDialog, Ui_usuario):
             self.lblSubtitulo.setText(mensagem)
             self.lblSubtitulo.setStyleSheet(f"color: {color}; font-weight: 600;")
         except Exception:
-            # Fallback: descomente se preferir modal
-            # if success:
-            #     QMessageBox.information(self, "Usuário", mensagem)
-            # else:
-            #     QMessageBox.warning(self, "Usuário", mensagem)
             pass
 
     def get_data(self) -> tuple[str, str, str]:

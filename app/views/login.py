@@ -9,14 +9,7 @@ from app.database import Database
 
 
 class Login(QDialog, Ui_login):
-    """
-    QDialog de Login que usa:
-      - UI do Qt Designer (Ui_login) com os seguintes widgets:
-          * QLineEdit de usuário  -> self.lineEdit
-          * QLineEdit de senha    -> self.lineEdit_2
-          * QPushButton Entrar    -> self.btnEntrar
-      - Validação no MySQL via Database.checar_usuario(usuario, senha)
-    """
+  
     loggedIn = Signal(str)  # emite o "name" do usuário (para MainWindow)
 
     def __init__(self, parent=None):
@@ -63,19 +56,18 @@ class Login(QDialog, Ui_login):
             result = self.db.checar_usuario(usuario, senha)
         except Exception as e:
             self._mostrar_erro("Falha ao consultar o banco de dados.")
-            # Se quiser logar o erro no console:
             print("[Login] Erro ao checar usuário:", e)
             return
 
         if result:
-            # result deve ter: {"name": "...", "user": "...", "role": "..."}
+           
             nome_real = result.get("name") or result.get("user") or usuario
             self.usuario_logado = nome_real
             # ✅ Etapa 4: capturar o perfil (role) retornado
             self.role = result.get("role") or "visualizador"
 
             self.loggedIn.emit(nome_real)
-            self.accept()  # fecha o QDialog com Accepted
+            self.accept()  
         else:
             self._mostrar_erro("Usuário ou senha inválidos.")
 

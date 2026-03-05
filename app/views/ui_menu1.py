@@ -180,7 +180,7 @@ class Ui_menu(object):
 "alternate-background-color: rgb(170, 0, 0);\n"
 "border-color: rgb(170, 0, 0);")
         icon = QIcon()
-        icon.addFile(u"../../../Downloads/\u00edcone-do-vetor-da-casa-ilustra\u00e7\u00e3o-home-preto-e-branco-\u00edcone-linear-cont\u00ednuo-da-casa-para-aplica\u00e7\u00f5es-m\u00f3veis-93005323.webp", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u"c:/Users/61348016/Downloads/ícone-do-vetor-da-casa-ilustração-home-preto-e-branco-ícone-linear-contínuo-da-casa-para-aplicações-móveis-93005323.webp", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnInicio.setIcon(icon)
         self.btnInicio.setIconSize(QSize(30, 30))
         self.btnInicio.setAutoDefault(False)
@@ -202,7 +202,7 @@ class Ui_menu(object):
         self.btnConfig.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(0, 0, 0);")
         icon1 = QIcon()
-        icon1.addFile(u"../../../Downloads/Designer (9).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u"c:/Users/61348016/Downloads/Designer (9).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnConfig.setIcon(icon1)
         self.btnConfig.setIconSize(QSize(40, 30))
         self.btnConfig.setCheckable(False)

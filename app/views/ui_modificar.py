@@ -190,15 +190,15 @@ class Ui_modificar(object):
 "QLabel.formLabel{font:600 10pt 'Segoe UI'; color:#444; margin-bottom:4px;}\n"
 "QLineEdit,QComboBox,QDateEdit,QSpinBox{background:#f7f7f7;border:1px solid #cfcfcf;border-radius:6px;padding:8px 10px; font:10pt 'Segoe UI';}", None))
         self.denominacao.setPlaceholderText(QCoreApplication.translate("Form", u"Insira aqui", None))
-        self.comboBox.setItemText(0, QCoreApplication.translate("Form", u"1", None))
-        self.comboBox.setItemText(1, QCoreApplication.translate("Form", u"2", None))
-        self.comboBox.setItemText(2, QCoreApplication.translate("Form", u"3", None))
-        self.comboBox.setItemText(3, QCoreApplication.translate("Form", u"4", None))
-        self.comboBox.setItemText(4, QCoreApplication.translate("Form", u"5", None))
+        self.comboBox.setItemText(0, QCoreApplication.translate("Form", u"Ford", None))
+        self.comboBox.setItemText(1, QCoreApplication.translate("Form", u"Fiat", None))
+        self.comboBox.setItemText(2, QCoreApplication.translate("Form", u"Honda", None))
+        self.comboBox.setItemText(3, QCoreApplication.translate("Form", u"Toyota", None))
+        self.comboBox.setItemText(4, QCoreApplication.translate("Form", u"Mercedez", None))
 
-        self.tipo.setItemText(0, QCoreApplication.translate("Form", u"Compra", None))
-        self.tipo.setItemText(1, QCoreApplication.translate("Form", u"Doa\u00e7\u00e3o", None))
-        self.tipo.setItemText(2, QCoreApplication.translate("Form", u"Loca\u00e7\u00e3o", None))
+        self.tipo.setItemText(0, QCoreApplication.translate("Form", u"Doação", None))
+        self.tipo.setItemText(1, QCoreApplication.translate("Form", u"Compra", None))
+        self.tipo.setItemText(2, QCoreApplication.translate("Form", u"Emenda Parlamentar", None))
 
         self.lbl_cnes.setStyleSheet(QCoreApplication.translate("Form", u"QLabel { font:600 10pt \"Segoe UI\"; color:#444; margin-bottom:4px; }", None))
         self.lbl_cnes.setText(QCoreApplication.translate("Form", u"CNES", None))

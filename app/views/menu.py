@@ -5,7 +5,6 @@ from .ui_menu1 import Ui_menu
 
 class menu(QWidget, Ui_menu):
     
-    # Sinais públicos para navegação
     gotoCadastro = Signal()
     gotoRelatorio = Signal()
     gotomodificar = Signal()
