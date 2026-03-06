@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'TELAKM.UI'
+## Form generated from reading UI file 'TELAKM.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.2
 ##
@@ -17,36 +17,22 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QDateEdit,
     QFormLayout, QGroupBox, QHBoxLayout, QHeaderView,
-    QLabel, QLineEdit, QPushButton, QSizePolicy,
-    QSpacerItem, QTableWidget, QTableWidgetItem, QVBoxLayout,
-    QWidget)
+    QLabel, QLineEdit, QPushButton, QRadioButton,
+    QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem,
+    QVBoxLayout, QWidget)
 
 class Ui_telakm(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(703, 428)
+        Form.resize(703, 427)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.groupDados_2 = QGroupBox(Form)
         self.groupDados_2.setObjectName(u"groupDados_2")
         self.formLayout_2 = QFormLayout(self.groupDados_2)
         self.formLayout_2.setObjectName(u"formLayout_2")
-        self.labelPlaca_2 = QLabel(self.groupDados_2)
-        self.labelPlaca_2.setObjectName(u"labelPlaca_2")
-
-        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.LabelRole, self.labelPlaca_2)
-
-        self.linePlaca_2 = QLineEdit(self.groupDados_2)
-        self.linePlaca_2.setObjectName(u"linePlaca_2")
-        self.linePlaca_2.setMaxLength(8)
-
-        self.formLayout_2.setWidget(0, QFormLayout.ItemRole.FieldRole, self.linePlaca_2)
-
-
-        self.verticalLayout.addWidget(self.groupDados_2)
-
-        self.groupDados = QGroupBox(Form)
+        self.groupDados = QGroupBox(self.groupDados_2)
         self.groupDados.setObjectName(u"groupDados")
         self.formLayout = QFormLayout(self.groupDados)
         self.formLayout.setObjectName(u"formLayout")
@@ -72,8 +58,56 @@ class Ui_telakm(object):
 
         self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.dateRegistro)
 
+        self.groupDados_3 = QGroupBox(self.groupDados)
+        self.groupDados_3.setObjectName(u"groupDados_3")
+        self.groupDados_3.setFlat(True)
+        self.groupDados_3.setCheckable(False)
+        self.horizontalLayout = QHBoxLayout(self.groupDados_3)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.labelPlaca_3 = QLabel(self.groupDados_3)
+        self.labelPlaca_3.setObjectName(u"labelPlaca_3")
 
-        self.verticalLayout.addWidget(self.groupDados)
+        self.horizontalLayout.addWidget(self.labelPlaca_3)
+
+        self.radioButton = QRadioButton(self.groupDados_3)
+        self.radioButton.setObjectName(u"radioButton")
+
+        self.horizontalLayout.addWidget(self.radioButton)
+
+        self.radioButton_2 = QRadioButton(self.groupDados_3)
+        self.radioButton_2.setObjectName(u"radioButton_2")
+
+        self.horizontalLayout.addWidget(self.radioButton_2)
+
+        self.labelDataRegistro_2 = QLabel(self.groupDados_3)
+        self.labelDataRegistro_2.setObjectName(u"labelDataRegistro_2")
+
+        self.horizontalLayout.addWidget(self.labelDataRegistro_2)
+
+        self.lineEdit = QLineEdit(self.groupDados_3)
+        self.lineEdit.setObjectName(u"lineEdit")
+
+        self.horizontalLayout.addWidget(self.lineEdit)
+
+
+        self.formLayout.setWidget(2, QFormLayout.ItemRole.FieldRole, self.groupDados_3)
+
+
+        self.formLayout_2.setWidget(4, QFormLayout.ItemRole.FieldRole, self.groupDados)
+
+        self.labelPlaca_2 = QLabel(self.groupDados_2)
+        self.labelPlaca_2.setObjectName(u"labelPlaca_2")
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.LabelRole, self.labelPlaca_2)
+
+        self.linePlaca_2 = QLineEdit(self.groupDados_2)
+        self.linePlaca_2.setObjectName(u"linePlaca_2")
+        self.linePlaca_2.setMaxLength(8)
+
+        self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.linePlaca_2)
+
+
+        self.verticalLayout.addWidget(self.groupDados_2)
 
         self.groupKm = QGroupBox(Form)
         self.groupKm.setObjectName(u"groupKm")
@@ -181,14 +215,19 @@ class Ui_telakm(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.groupDados_2.setTitle(QCoreApplication.translate("Form", u"Quilometragem di\u00e1ria", None))
-        self.labelPlaca_2.setText(QCoreApplication.translate("Form", u"KM", None))
-        self.linePlaca_2.setPlaceholderText(QCoreApplication.translate("Form", u"Ex.: 100KM", None))
+        self.groupDados_2.setTitle(QCoreApplication.translate("Form", u"Quilometragem Mensal", None))
         self.groupDados.setTitle(QCoreApplication.translate("Form", u"Dados do registro", None))
         self.labelPlaca.setText(QCoreApplication.translate("Form", u"Placa:", None))
         self.linePlaca.setPlaceholderText(QCoreApplication.translate("Form", u"Ex.: ABC1D23 ou ABC-1234", None))
         self.labelDataRegistro.setText(QCoreApplication.translate("Form", u"Data do registro:", None))
         self.dateRegistro.setDisplayFormat(QCoreApplication.translate("Form", u"dd/MM/yyyy", None))
+        self.groupDados_3.setTitle(QCoreApplication.translate("Form", u"Funcionamento", None))
+        self.labelPlaca_3.setText(QCoreApplication.translate("Form", u"Rodou:", None))
+        self.radioButton.setText(QCoreApplication.translate("Form", u"Sim", None))
+        self.radioButton_2.setText(QCoreApplication.translate("Form", u"N\u00e3o", None))
+        self.labelDataRegistro_2.setText(QCoreApplication.translate("Form", u"Motivo", None))
+        self.labelPlaca_2.setText(QCoreApplication.translate("Form", u"KM", None))
+        self.linePlaca_2.setPlaceholderText(QCoreApplication.translate("Form", u"Ex.: 100KM", None))
         self.groupKm.setTitle(QCoreApplication.translate("Form", u"Quilometragem por m\u00eas", None))
         self.labelAno.setText(QCoreApplication.translate("Form", u"Ano:", None))
         self.btnPreencherAno.setText(QCoreApplication.translate("Form", u"Preencher meses do ano", None))

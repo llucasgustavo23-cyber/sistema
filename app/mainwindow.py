@@ -40,6 +40,7 @@ class MainWindow(QMainWindow):
         self.modificar = Modificar(self._sugestoes)
         self.cadastro = Cadastro()
 
+
         # ADICIONAR APENAS WIDGETS (não QDialogs!)
         self._stack.addWidget(self.telainicial)
         self._stack.addWidget(self.relatorio)
@@ -79,6 +80,7 @@ class MainWindow(QMainWindow):
         # Botão “Cadastrar Usuário” -> abre QDialog usuario
         if hasattr(self.menu, "gotousuario"):
             self.menu.gotousuario.connect(self._abrir_usuario)
+        
 
         # SUGESTÕES
         self._conectar_provider_ao_fluxo()
@@ -189,31 +191,31 @@ class MainWindow(QMainWindow):
 
     # --------------------------------------------------------
     # QDIALOG DE USUÁRIO (cadastro com perfil)
-    # --------------------------------------------------------
+    @Slot()
     def _abrir_usuario(self) -> None:
         if not self._require_login():
             return
-        # Apenas admin pode criar usuários
         if not self._require_role({"admin"}):
             return
 
         dlg = usuario(self)
         dlg.submitted.connect(self._on_usuario_cadastrado)
 
-        if dlg.exec():
-            self.show_menu()
+        # Mantém modal, porém NÃO navega para menu após fechar
+        dlg.exec()
+
+    
 
     @Slot(str, str, str)
     def _on_usuario_cadastrado(self, usuario_txt: str, senha_txt: str, role: str):
-    
         try:
             self.db.criar_usuario(usuario_txt, senha_txt, role)
             QMessageBox.information(self, "Usuários",
                                     f"Usuário '{usuario_txt}' criado com perfil '{role}'.")
         except Exception as e:
             QMessageBox.critical(self, "Usuários", f"Falha ao criar usuário: {e}")
-
-        self.show_menu()
+        # ❌ Não navega para o menu aqui
+    
 
     # --------------------------------------------------------
     # RBAC: Habilitar/Desabilitar botões do menu conforme o perfil

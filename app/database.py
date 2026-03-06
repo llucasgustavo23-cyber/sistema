@@ -6,7 +6,7 @@ import base64
 import hmac
 from hashlib import pbkdf2_hmac
 from secrets import token_bytes
-from typing import Optional, Dict, List, Any, Tuple
+from typing import Optional, Dict, List, Any
 from datetime import date
 
 import pymysql
@@ -59,7 +59,6 @@ class Database:
         self.password = os.getenv("DB_PASSWORD", "")
         self.db_name = os.getenv("DB_NAME", "sistema")
 
-        # Cria schema (tabela usuarios) se solicitado
         if ensure_schema:
             try:
                 self.create_tables()
@@ -80,7 +79,8 @@ class Database:
             cursorclass=DictCursor,
         )
 
-    # ========== (SEU) gerenciamento de usuários ==========
+    # ========== Usuários ==========
+
     def checar_usuario(self, usuario: str, senha: str) -> Optional[Dict[str, Any]]:
         sql = """
             SELECT idfuncionarios, usuario, algo, iterations, salt, pwd_hash, role
@@ -278,7 +278,7 @@ class Database:
         finally:
             conn.close()
 
-    # ---------- lookups (buscar sem criar) ----------
+    # ---------- lookups ----------
     def _get_modelo_id_por_texto(self, modelo_texto: str) -> int:
         modelo_texto = (modelo_texto or "").strip()
         if not modelo_texto:
@@ -300,9 +300,9 @@ class Database:
         forma_texto = (forma_texto or "").strip()
         if not forma_texto:
             raise ValueError("Forma de aquisição não pode ser vazia.")
-        name_col = self._descobrir_coluna_texto_principal("for_aquisicao")  # geralmente 'tipo'
-        # PK em for_aquisicao é idFor_aquisicao
-        sql = f"SELECT id_forma_aquisicao FROM for_aquisicao WHERE {name_col}=%s LIMIT 1"
+        name_col = self._descobrir_coluna_texto_principal("for_aquisicao")
+        # PK em for_aquisicao: id_forma_aquisicao
+        sql = f"SELECT id_forma_aquisicao AS id FROM for_aquisicao WHERE {name_col}=%s LIMIT 1"
         conn = self._get_conn()
         try:
             with conn.cursor() as cur:
@@ -310,7 +310,7 @@ class Database:
                 row = cur.fetchone()
                 if not row:
                     raise ValueError(f"Forma de aquisição '{forma_texto}' não encontrada em 'for_aquisicao'.")
-                return int(row["id_forma_aquisicao"])
+                return int(row["id"])
         finally:
             conn.close()
 
@@ -367,18 +367,6 @@ class Database:
         finally:
             conn.close()
 
-    def listar_denominacoes(self) -> List[str]:
-        if not self._tabela_tem_coluna("ambulancia", "denominacao"):
-            return []
-        sql = "SELECT DISTINCT denominacao FROM ambulancia WHERE denominacao IS NOT NULL AND denominacao <> '' ORDER BY denominacao"
-        conn = self._get_conn()
-        try:
-            with conn.cursor() as cur:
-                cur.execute(sql)
-                return [r["denominacao"] for r in (cur.fetchall() or []) if r.get("denominacao")]
-        finally:
-            conn.close()
-
     # ---------- unicidade ----------
     def _chassi_existe(self, chassi: str) -> bool:
         sql = "SELECT 1 FROM ambulancia WHERE chassi=%s LIMIT 1"
@@ -423,6 +411,41 @@ class Database:
         finally:
             conn.close()
 
+    # --- NOVO: obter detalhes completos de uma ambulância pelo chassi ---
+    def obter_ambulancia_por_chassi(self, chassi_ref: str) -> Optional[Dict[str, Any]]:
+        """
+        Retorna os dados da ambulância cujo chassi = chassi_ref,
+        com ids e nomes legíveis de modelo e forma de aquisição.
+        """
+        nome_modelo = self._descobrir_coluna_texto_principal("modelo")
+        nome_forma = self._descobrir_coluna_texto_principal("for_aquisicao")
+
+        sql = f"""
+            SELECT
+                a.id_ambulancia,
+                a.placa,
+                a.chassi,
+                a.id_modelo,
+                m.{nome_modelo} AS modelo_nome,
+                a.id_forma_aquisicao,
+                f.{nome_forma} AS forma_nome,
+                a.data_aquisicao,
+                a.uso_oficial,
+                a.cnes
+            FROM ambulancia a
+            LEFT JOIN modelo m ON m.id_modelo = a.id_modelo
+            LEFT JOIN for_aquisicao f ON f.id_forma_aquisicao = a.id_forma_aquisicao
+            WHERE a.chassi = %s
+            LIMIT 1
+        """
+        conn = self._get_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(sql, [chassi_ref.strip()])
+                return cur.fetchone()
+        finally:
+            conn.close()
+
     # ---------- atualização ----------
     def atualizar_ambulancia_por_id(
         self,
@@ -435,7 +458,6 @@ class Database:
         cnes: Optional[str],
         placa: Optional[str] = None,
         chassi: Optional[str] = None,
-        denominacao: Optional[str] = None,
     ) -> bool:
         """
         Atualiza a ambulância pelo ID. Respeita a regra do CNES x Oficial.
@@ -444,9 +466,13 @@ class Database:
         if uso_oficial and not cnes_final:
             raise ValueError("CNES é obrigatório para viatura oficial.")
 
-        tem_denominacao = self._tabela_tem_coluna("ambulancia", "denominacao")
-
-        sets = ["id_modelo=%s", "id_forma_aquisicao=%s", "data_aquisicao=%s", "uso_oficial=%s", "cnes=%s"]
+        sets = [
+            "id_modelo=%s",
+            "id_forma_aquisicao=%s",
+            "data_aquisicao=%s",
+            "uso_oficial=%s",
+            "cnes=%s",
+        ]
         vals: List[Any] = [int(id_modelo), int(id_forma_aquisicao), data_aquisicao, bool(uso_oficial), cnes_final]
 
         if placa:
@@ -455,9 +481,6 @@ class Database:
         if chassi:
             sets.append("chassi=%s")
             vals.append(chassi.strip())
-        if tem_denominacao and (denominacao or "").strip():
-            sets.append("denominacao=%s")
-            vals.append(denominacao.strip())
 
         vals.append(int(id_ambulancia))
         sql = f"UPDATE ambulancia SET {', '.join(sets)} WHERE id_ambulancia=%s"
@@ -486,7 +509,6 @@ class Database:
         cnes: Optional[str],
         placa: Optional[str] = None,
         novo_chassi: Optional[str] = None,
-        denominacao: Optional[str] = None,
     ) -> bool:
         """
         Atualiza a ambulância localizando pelo CHASSI atual (único).
@@ -496,7 +518,7 @@ class Database:
             raise ValueError("Não encontrei ambulância com esse chassi.")
 
         return self.atualizar_ambulancia_por_id(
-            id_amb,
+            id_amb["id_ambulancia"] if isinstance(id_amb, dict) else int(id_amb),
             id_modelo=id_modelo,
             id_forma_aquisicao=id_forma_aquisicao,
             data_aquisicao=data_aquisicao,
@@ -504,9 +526,9 @@ class Database:
             cnes=cnes,
             placa=placa,
             chassi=novo_chassi,
-            denominacao=denominacao,
         )
-    # ------------------ CADASTRO DE AMBULÂNCIA (USANDO FKs EXISTENTES) ------------------
+
+    # ------------------ CADASTRO (USANDO FKs EXISTENTES) ------------------
     def cadastrar_ambulancia(
         self,
         *,
@@ -522,16 +544,14 @@ class Database:
         data_aquisicao: date,
         uso_oficial: bool,
         cnes: Optional[str] = None,
-        denominacao: Optional[str] = None,          # grava se a coluna existir
     ) -> int:
         """
         Insere em 'ambulancia' referenciando SOMENTE registros já existentes:
         - modelo (modelo.id_modelo)
-        - for_aquisicao (for_aquisicao.idFor_aquisicao) -> FK: ambulancia.id_forma_aquisicao
+        - for_aquisicao (for_aquisicao.id_forma_aquisicao) -> FK: ambulancia.id_forma_aquisicao
         Regras:
         - placa/chassi únicos
         - CNES obrigatório se uso_oficial=True; NULL se False
-        - 'denominacao' gravada apenas se a coluna existir em 'ambulancia'
         """
         if not placa or not chassi:
             raise ValueError("Placa e chassi são obrigatórios.")
@@ -547,7 +567,7 @@ class Database:
                 raise ValueError("Informe 'id_modelo' ou 'modelo_texto'.")
             id_modelo = self._get_modelo_id_por_texto(modelo_texto)
 
-        # Resolver id_forma_aquisicao (aponta para for_aquisicao.idFor_aquisicao)
+        # Resolver id_forma_aquisicao
         if id_forma_aquisicao is None:
             if not forma_aquisicao_texto:
                 raise ValueError("Informe 'id_forma_aquisicao' ou 'forma_aquisicao_texto'.")
@@ -558,8 +578,6 @@ class Database:
         if uso_oficial and not cnes_final:
             raise ValueError("CNES é obrigatório para viatura oficial.")
 
-        tem_denominacao = self._tabela_tem_coluna("ambulancia", "denominacao")
-
         colunas = [
             "placa", "chassi", "id_modelo", "id_forma_aquisicao",
             "data_aquisicao", "uso_oficial", "cnes"
@@ -568,10 +586,6 @@ class Database:
             placa.strip(), chassi.strip(), int(id_modelo), int(id_forma_aquisicao),
             data_aquisicao, bool(uso_oficial), cnes_final
         ]
-
-        if tem_denominacao and (denominacao or "").strip():
-            colunas.append("denominacao")
-            valores.append(denominacao.strip())
 
         placeholders = ", ".join(["%s"] * len(valores))
         sql = f"INSERT INTO ambulancia ({', '.join(colunas)}) VALUES ({placeholders})"
@@ -588,3 +602,53 @@ class Database:
             raise
         finally:
             conn.close()
+    def inserir_registro_uso(
+        self,
+        *,
+        total_km: int,
+        motivo: str | None,
+        data: date,
+        rodou: str | None = None,   # "Sim" ou "Não" (opcional)
+    ) -> int:
+        """
+        Insere em registro_uso (total_km, motivo, data [, rodou]).
+        - Schema esperado: idRegistro_uso (PK), total_km, motivo, data, (rodou opcional)
+        - Se a coluna 'rodou' existir, ela será incluída no INSERT com o valor "Sim"/"Não".
+        """
+        if total_km is None:
+            raise ValueError("total_km é obrigatório.")
+        if data is None:
+            raise ValueError("data é obrigatória.")
+
+        colunas = ["total_km", "motivo", "data"]
+        valores = [int(total_km), (motivo or None), data]
+
+        # Inclui 'rodou' se a coluna existir no schema
+        try:
+            if self._tabela_tem_coluna("registro_uso", "rodou"):
+                colunas.append("rodou")
+                # normaliza para "Sim" / "Não" (ou None)
+                rodou_norm = None
+                if isinstance(rodou, str):
+                    rodou_norm = "Sim" if rodou.strip().lower() in ("sim", "s", "yes", "y", "true", "1") else "Não" if rodou.strip().lower() in ("não", "nao", "n", "no", "false", "0") else rodou.strip()
+                valores.append(rodou_norm)
+        except Exception:
+            # Se der qualquer erro ao checar a coluna, segue sem 'rodou'
+            pass
+
+        placeholders = ", ".join(["%s"] * len(valores))
+        sql = f"INSERT INTO registro_uso ({', '.join(colunas)}) VALUES ({placeholders})"
+
+        conn = self._get_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(sql, valores)
+                new_id = cur.lastrowid
+            conn.commit()
+            return int(new_id)
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
+    

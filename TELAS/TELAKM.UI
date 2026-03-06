@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>703</width>
-    <height>428</height>
+    <height>427</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,66 +17,112 @@
    <item>
     <widget class="QGroupBox" name="groupDados_2">
      <property name="title">
-      <string>Quilometragem diária</string>
+      <string>Quilometragem Mensal</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
-      <item row="0" column="0">
+      <item row="4" column="1">
+       <widget class="QGroupBox" name="groupDados">
+        <property name="title">
+         <string>Dados do registro</string>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelPlaca">
+           <property name="text">
+            <string>Placa:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="linePlaca">
+           <property name="maxLength">
+            <number>8</number>
+           </property>
+           <property name="placeholderText">
+            <string>Ex.: ABC1D23 ou ABC-1234</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="labelDataRegistro">
+           <property name="text">
+            <string>Data do registro:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDateEdit" name="dateRegistro">
+           <property name="displayFormat">
+            <string>dd/MM/yyyy</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QGroupBox" name="groupDados_3">
+           <property name="title">
+            <string>Funcionamento</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="labelPlaca_3">
+              <property name="text">
+               <string>Rodou:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButton">
+              <property name="text">
+               <string>Sim</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButton_2">
+              <property name="text">
+               <string>Não</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelDataRegistro_2">
+              <property name="text">
+               <string>Motivo</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QLabel" name="labelPlaca_2">
         <property name="text">
-         <string>KIM</string>
+         <string>KM</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="1" column="1">
        <widget class="QLineEdit" name="linePlaca_2">
         <property name="maxLength">
          <number>8</number>
         </property>
         <property name="placeholderText">
          <string>Ex.: 100KM</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupDados">
-     <property name="title">
-      <string>Dados do registro</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelPlaca">
-        <property name="text">
-         <string>Placa:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="linePlaca">
-        <property name="maxLength">
-         <number>8</number>
-        </property>
-        <property name="placeholderText">
-         <string>Ex.: ABC1D23 ou ABC-1234</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelDataRegistro">
-        <property name="text">
-         <string>Data do registro:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QDateEdit" name="dateRegistro">
-        <property name="displayFormat">
-         <string>dd/MM/yyyy</string>
-        </property>
-        <property name="calendarPopup">
-         <bool>true</bool>
         </property>
        </widget>
       </item>

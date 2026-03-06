@@ -26,6 +26,7 @@ class Cadastro(QWidget, Ui_cadastro):
     gotomenu = Signal()
     submitted = Signal(AmbulanciaDTO)
     gotocadastro = Signal()
+    gotoambulancai = Signal()
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
@@ -52,16 +53,9 @@ class Cadastro(QWidget, Ui_cadastro):
         self._setup_completers()
 
         # Botões OK/Cancelar
+        # Botões OK/Cancelar (SOMENTE UMA VEZ, sem duplicação!)
         self.buttonBox.accepted.connect(self.on_buttonBox_accepted)
         self.buttonBox.rejected.connect(self.on_buttonBox_rejected)
-        try:
-            ok_btn = self.buttonBox.button(QDialogButtonBox.Ok)
-            cancel_btn = self.buttonBox.button(QDialogButtonBox.Cancel)
-            if ok_btn is not None: ok_btn.clicked.connect(self.on_buttonBox_accepted)
-            if cancel_btn is not None: cancel_btn.clicked.connect(self.on_buttonBox_rejected)
-        except Exception:
-            pass
-
         # Tira realce de erro ao digitar
         self.placa_edit.textChanged.connect(lambda _: self.placa_edit.setStyleSheet(""))
         self.chassi_edit.textChanged.connect(lambda _: self.chassi_edit.setStyleSheet(""))
