@@ -1,4 +1,3 @@
-# cadastro.py
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
@@ -10,6 +9,7 @@ from PySide6.QtGui import QCloseEvent
 
 from ui_cadastro import Ui_cadastro
 from app.database import Database
+from listardadosqdialog import ListarDadosDialog
 
 @dataclass
 class AmbulanciaDTO:
@@ -22,6 +22,7 @@ class AmbulanciaDTO:
     cnes: str
     denominacao: str
 
+
 class Cadastro(QWidget, Ui_cadastro):
     gotomenu = Signal()
     submitted = Signal(AmbulanciaDTO)
@@ -33,30 +34,36 @@ class Cadastro(QWidget, Ui_cadastro):
         self.setupUi(self)
         self.setWindowTitle("Cadastro de Ambulâncias")
 
-        # DB
         self._db = Database()
 
-        # Aliases conforme o seu .ui:
+        # Aliases do .ui
         self.placa_edit = self.lineEdit
         self.modelo_combo = self.comboBox
         self.chassi_edit = self.chassi
-        self.forma_combo = self.tipo            # for_aquisicao.tipo
+        self.forma_combo = self.tipo
         self.data_edit = self.data
         self.cnes_edit = self.cnes
         self.denominacao_edit = self.denominacao
 
-        # Autocomplete local
+        # Autocomplete
         self._model_placa = QStringListModel([], self)
         self._model_chassi = QStringListModel([], self)
         self._model_cnes = QStringListModel([], self)
         self._model_denominacao = QStringListModel([], self)
         self._setup_completers()
 
+        # Carrega combos do banco
+        self._carregar_modelos_do_bd()
+        self._carregar_formas_do_bd()
+
         # Botões OK/Cancelar
-        # Botões OK/Cancelar (SOMENTE UMA VEZ, sem duplicação!)
         self.buttonBox.accepted.connect(self.on_buttonBox_accepted)
         self.buttonBox.rejected.connect(self.on_buttonBox_rejected)
-        # Tira realce de erro ao digitar
+
+        # Botão Ambulâncias Cadastradas
+        self.pushButton.clicked.connect(self._abrir_listagem)
+
+        # Limpa realce ao digitar
         self.placa_edit.textChanged.connect(lambda _: self.placa_edit.setStyleSheet(""))
         self.chassi_edit.textChanged.connect(lambda _: self.chassi_edit.setStyleSheet(""))
         self.cnes_edit.textChanged.connect(lambda _: self.cnes_edit.setStyleSheet(""))
@@ -64,9 +71,9 @@ class Cadastro(QWidget, Ui_cadastro):
         self.modelo_combo.currentIndexChanged.connect(lambda _: self.modelo_combo.setStyleSheet(""))
         self.data_edit.dateChanged.connect(lambda _: self.data_edit.setStyleSheet(""))
 
-        # Radio buttons: radioButton_2 = Oficial, radioButton = Reserva
-        self.radioButton_2.toggled.connect(self._atualizar_cnes_visibilidade)  # Oficial
-        self.radioButton.toggled.connect(self._atualizar_cnes_visibilidade)    # Reserva
+        # Radio: radioButton_2 = Oficial, radioButton = Reserva
+        self.radioButton_2.toggled.connect(self._atualizar_cnes_visibilidade)
+        self.radioButton.toggled.connect(self._atualizar_cnes_visibilidade)
         if not (self.radioButton_2.isChecked() or self.radioButton.isChecked()):
             self.radioButton_2.setChecked(True)
         self._atualizar_cnes_visibilidade()
@@ -84,26 +91,52 @@ class Cadastro(QWidget, Ui_cadastro):
         self.cnes_edit.setCompleter(mk(self._model_cnes))
         self.denominacao_edit.setCompleter(mk(self._model_denominacao))
 
+    # -------------------- Carregamento do banco --------------------
+    def _carregar_modelos_do_bd(self):
+        self.modelo_combo.clear()
+        try:
+            for row in self._db.listar_modelos():
+                self.modelo_combo.addItem(str(row["nome"]), row["id_modelo"])
+        except Exception as e:
+            print("[Cadastro] Erro ao carregar modelos:", e)
+
+    def _carregar_formas_do_bd(self):
+        self.forma_combo.clear()
+        try:
+            for row in self._db.listar_formas_aquisicao():
+                self.forma_combo.addItem(str(row["nome"]), row["id"])
+        except Exception as e:
+            print("[Cadastro] Erro ao carregar formas de aquisição:", e)
+
+    # -------------------- Visibilidade CNES --------------------
     def _atualizar_cnes_visibilidade(self) -> None:
         oficial = self.radioButton_2.isChecked()
         self.lbl_cnes.setVisible(oficial)
-        self.cnes.setVisible(oficial)
-        self.cnes.setEnabled(oficial)
+        self.cnes_edit.setVisible(oficial)
+        self.cnes_edit.setEnabled(oficial)
         if not oficial:
-            self.cnes.clear()
-            self.cnes.setStyleSheet("")
+            self.cnes_edit.clear()
+            self.cnes_edit.setStyleSheet("")
+
+    # -------------------- Abrir listagem como QDialog --------------------
+    def _abrir_listagem(self) -> None:
+        dlg = ListarDadosDialog(parent=self)
+        dlg.exec()
 
     # -------------------- OK / Cancelar --------------------
     def on_buttonBox_accepted(self):
         self._resetar_estilos()
         oficial = self.radioButton_2.isChecked()
 
-        # Validações (conforme você definiu)
         campos_invalidos = []
-        if not self.placa_edit.text().strip(): campos_invalidos.append(self.placa_edit)
-        if not self.chassi_edit.text().strip(): campos_invalidos.append(self.chassi_edit)
-        if not self.denominacao_edit.text().strip(): campos_invalidos.append(self.denominacao_edit)
-        if oficial and not self.cnes_edit.text().strip(): campos_invalidos.append(self.cnes_edit)
+        if not self.placa_edit.text().strip():
+            campos_invalidos.append(self.placa_edit)
+        if not self.chassi_edit.text().strip():
+            campos_invalidos.append(self.chassi_edit)
+        if not self.denominacao_edit.text().strip():
+            campos_invalidos.append(self.denominacao_edit)
+        if oficial and not self.cnes_edit.text().strip():
+            campos_invalidos.append(self.cnes_edit)
 
         if campos_invalidos:
             self._destacar_campos_vazios(campos_invalidos)
@@ -122,20 +155,21 @@ class Cadastro(QWidget, Ui_cadastro):
             denominacao=self.denominacao_edit.text().strip(),
         )
 
-        # Converte QDate -> date
         d = date(dto.data_aquisicao.year(), dto.data_aquisicao.month(), dto.data_aquisicao.day())
 
-        # Salva no banco (alinhado ao seu schema)
+        id_modelo = self.modelo_combo.currentData()
+        id_forma = self.forma_combo.currentData()
+
         try:
             new_id = self._db.cadastrar_ambulancia(
-                modelo_texto=dto.modelo,
+                id_modelo=int(id_modelo),
+                id_forma_aquisicao=int(id_forma),
                 placa=dto.placa,
                 chassi=dto.chassi,
-                forma_aquisicao_texto=dto.forma_aquisicao,
                 data_aquisicao=d,
                 uso_oficial=dto.oficial,
                 cnes=(dto.cnes if dto.oficial else None),
-                denominacao=dto.denominacao,  # só será usada se a coluna existir
+                denominacao=dto.denominacao,
             )
         except Exception as e:
             QMessageBox.critical(self, "Erro ao salvar", f"Ocorreu um erro ao salvar o cadastro:\n{e}")
@@ -171,14 +205,17 @@ class Cadastro(QWidget, Ui_cadastro):
         estilo_date = "QDateEdit { border: 1px solid #d9534f; border-radius: 6px; }"
         for w in widgets:
             cls = w.metaObject().className()
-            if cls == "QLineEdit": w.setStyleSheet(estilo_line)
-            elif cls == "QComboBox": w.setStyleSheet(estilo_combo)
-            elif cls == "QDateEdit": w.setStyleSheet(estilo_date)
-            else: w.setStyleSheet(estilo_line)
+            if cls == "QLineEdit":
+                w.setStyleSheet(estilo_line)
+            elif cls == "QComboBox":
+                w.setStyleSheet(estilo_combo)
+            elif cls == "QDateEdit":
+                w.setStyleSheet(estilo_date)
+            else:
+                w.setStyleSheet(estilo_line)
 
     def _limpar_form(self):
         self.placa_edit.clear()
         self.chassi_edit.clear()
         self.denominacao_edit.clear()
         self.cnes_edit.clear()
-        # mantém seleção atual dos combos e data

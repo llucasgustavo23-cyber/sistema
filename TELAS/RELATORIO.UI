@@ -1,661 +1,617 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>relatorio</class>
+ <widget class="QWidget" name="relatorio">
   <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>814</width>
-    <height>822</height>
-   </rect>
+   <rect><x>0</x><y>0</y><width>900</width><height>860</height></rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
+  <property name="windowTitle"><string>Relatório de Quilometragem</string></property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget {
+    background-color: #f0f4f8;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #1e293b;
+}
+
+QGroupBox {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-top: 14px;
+    padding: 12px 16px 16px 16px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #334155;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 14px;
+    top: 2px;
+    padding: 0 6px;
+    background-color: #ffffff;
+    color: #4f46e5;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+QLabel {
+    background: transparent;
+    color: #475569;
+    font-size: 13px;
+}
+
+QLabel[class="valor"] {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+QComboBox {
+    background-color: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    color: #1e293b;
+    min-height: 20px;
+    min-width: 160px;
+}
+
+QComboBox:focus {
+    border-color: #4f46e5;
+    background-color: #ffffff;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 24px;
+}
+
+QComboBox QAbstractItemView {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    selection-background-color: #ede9fe;
+    selection-color: #1e293b;
+}
+
+QDateEdit {
+    background-color: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    color: #1e293b;
+    min-height: 20px;
+}
+
+QDateEdit:focus {
+    border-color: #4f46e5;
+    background-color: #ffffff;
+}
+
+QDateEdit::drop-down {
+    border: none;
+    width: 24px;
+}
+
+QTableWidget {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    gridline-color: #f1f5f9;
+    font-size: 13px;
+    selection-background-color: #ede9fe;
+    selection-color: #1e293b;
+    alternate-background-color: #f8fafc;
+}
+
+QTableWidget::item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+QHeaderView::section {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 10px 12px;
+    border: none;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+QListWidget {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #475569;
+}
+
+QListWidget::item {
+    padding: 6px 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+QListWidget::item:selected {
+    background-color: #ede9fe;
+    color: #1e293b;
+}
+
+QPushButton#btnGerar {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 34px;
+}
+
+QPushButton#btnGerar:hover { background-color: #4338ca; }
+QPushButton#btnGerar:pressed { background-color: #3730a3; }
+
+QPushButton#btnExportarPDF {
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 34px;
+}
+
+QPushButton#btnExportarPDF:hover { background-color: #b91c1c; }
+
+QPushButton#btnExportarExcel {
+    background-color: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 34px;
+}
+
+QPushButton#btnExportarExcel:hover { background-color: #15803d; }
+
+QPushButton#btnImprimir {
+    background-color: #0284c7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 34px;
+}
+
+QPushButton#btnImprimir:hover { background-color: #0369a1; }
+
+QPushButton#btnVoltar {
+    background-color: #ffffff;
+    color: #64748b;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 9px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 34px;
+}
+
+QPushButton#btnVoltar:hover {
+    background-color: #f8fafc;
+    color: #334155;
+    border-color: #cbd5e1;
+}
+
+QScrollBar:vertical {
+    background: #f8fafc;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #cbd5e1;
+    border-radius: 4px;
+    min-height: 30px;
+}
+
+QScrollBar::handle:vertical:hover { background: #94a3b8; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
+   </string>
   </property>
+
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing"><number>10</number></property>
+   <property name="contentsMargins"><number>16</number><number>16</number><number>16</number><number>16</number></property>
+
+   <!-- FILTROS -->
    <item>
     <widget class="QGroupBox" name="groupFiltros">
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="title">
-      <string>Filtros</string>
-     </property>
+     <property name="title"><string>Filtros</string></property>
      <layout class="QHBoxLayout" name="horizontalLayout_filtros">
+      <property name="spacing"><number>12</number></property>
       <item>
        <widget class="QLabel" name="labelAmb">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Ambulância:</string>
-        </property>
+        <property name="text"><string>Ambulância:</string></property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboAmbulancia">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>New Item</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelMes">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
+       <widget class="QComboBox" name="comboAmbulancia"/>
       </item>
       <item>
        <widget class="QLabel" name="labelAno">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Data</string>
-        </property>
+        <property name="text"><string>Data:</string></property>
        </widget>
       </item>
       <item>
        <widget class="QDateEdit" name="dateEdit">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="displayFormat">
-         <string>M/yyyy</string>
-        </property>
-        <property name="calendarPopup">
-         <bool>true</bool>
-        </property>
-        <property name="date">
-         <date>
-          <year>2010</year>
-          <month>1</month>
-          <day>1</day>
-         </date>
-        </property>
+        <property name="calendarPopup"><bool>true</bool></property>
+        <property name="displayFormat"><string>MM/yyyy</string></property>
        </widget>
       </item>
       <item>
        <spacer name="spacerFiltros1">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
+        <property name="orientation"><enum>Qt::Horizontal</enum></property>
+        <property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property>
        </spacer>
       </item>
       <item>
        <widget class="QPushButton" name="btnGerar">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Gerar Relatório</string>
-        </property>
+        <property name="text"><string>Gerar Relatório</string></property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
+
+   <!-- INFO DA AMBULÂNCIA -->
    <item>
     <widget class="QGroupBox" name="groupInfo">
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="title">
-      <string>Informações da Ambulância</string>
-     </property>
+     <property name="title"><string>Informações da Ambulância</string></property>
      <layout class="QGridLayout" name="gridLayout_info">
+      <property name="horizontalSpacing"><number>16</number></property>
+      <property name="verticalSpacing"><number>10</number></property>
+
+      <!-- Chassi -->
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblChassiTitle">
+        <property name="text"><string>Chassi:</string></property>
+        <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
+       </widget>
+      </item>
       <item row="1" column="0">
+       <widget class="QLabel" name="lblChassi">
+        <property name="text"><string>-</string></property>
+        <property name="styleSheet"><string>font-weight: 700; font-size: 13px; color: #1e293b;</string></property>
+       </widget>
+      </item>
+
+      <!-- Spacer -->
+      <item row="0" column="1" rowspan="2">
+       <spacer name="horizontalSpacer">
+        <property name="orientation"><enum>Qt::Horizontal</enum></property>
+        <property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property>
+       </spacer>
+      </item>
+
+      <!-- Ano -->
+      <item row="0" column="2">
        <widget class="QLabel" name="lblAnoTitle">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Ano:</string>
-        </property>
+        <property name="text"><string>Ano:</string></property>
+        <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
        </widget>
       </item>
       <item row="1" column="2">
        <widget class="QLabel" name="lblAno">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="text">
-         <string>-</string>
-        </property>
+        <property name="text"><string>-</string></property>
+        <property name="styleSheet"><string>font-weight: 700; font-size: 13px; color: #1e293b;</string></property>
        </widget>
       </item>
-      <item row="2" column="5">
-       <widget class="QLabel" name="lblUnidade">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </widget>
+
+      <!-- Spacer -->
+      <item row="0" column="3" rowspan="2">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation"><enum>Qt::Horizontal</enum></property>
+        <property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property>
+       </spacer>
       </item>
-      <item row="0" column="3">
+
+      <!-- Placa -->
+      <item row="0" column="4">
        <widget class="QLabel" name="lblPlacaTitle">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Placa:</string>
-        </property>
+        <property name="text"><string>Placa:</string></property>
+        <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QLabel" name="lblUnidadeTitle">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Unidade:</string>
-        </property>
+      <item row="1" column="4">
+       <widget class="QLabel" name="lblPlaca">
+        <property name="text"><string>-</string></property>
+        <property name="styleSheet"><string>font-weight: 700; font-size: 13px; color: #4f46e5;</string></property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="lblData">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </widget>
+
+      <!-- Spacer -->
+      <item row="0" column="5" rowspan="2">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation"><enum>Qt::Horizontal</enum></property>
+        <property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property>
+       </spacer>
       </item>
-      <item row="1" column="3">
+
+      <!-- Forma de Aquisição -->
+      <item row="0" column="6">
        <widget class="QLabel" name="lblFormaTitle">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Forma de Aquisição:</string>
-        </property>
+        <property name="text"><string>Forma de Aquisição:</string></property>
+        <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblChassiTitle">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Chassi:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5">
+      <item row="1" column="6">
        <widget class="QLabel" name="lblForma">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="text">
-         <string>-</string>
-        </property>
+        <property name="text"><string>-</string></property>
+        <property name="styleSheet"><string>font-weight: 700; font-size: 13px; color: #1e293b;</string></property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="lblChassi">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </widget>
-      </item>
+
+      <!-- Data de Aquisição -->
       <item row="2" column="0">
        <widget class="QLabel" name="lblDataTitle">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Data de Aquisição:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QLabel" name="lblPlaca">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="text">
-         <string>-</string>
-        </property>
+        <property name="text"><string>Data de Aquisição:</string></property>
+        <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="lblTipoTitle">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Tipo:</string>
-        </property>
+       <widget class="QLabel" name="lblData">
+        <property name="text"><string>-</string></property>
+        <property name="styleSheet"><string>font-weight: 700; font-size: 13px; color: #1e293b;</string></property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <spacer name="spacerInfo">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+
+      <!-- Unidade -->
+      <item row="2" column="4">
+       <widget class="QLabel" name="lblUnidadeTitle">
+        <property name="text"><string>Unidade (CNES):</string></property>
+        <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
+       </widget>
       </item>
-      <item row="0" column="1">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+      <item row="3" column="4">
+       <widget class="QLabel" name="lblUnidade">
+        <property name="text"><string>-</string></property>
+        <property name="styleSheet"><string>font-weight: 700; font-size: 13px; color: #1e293b;</string></property>
+       </widget>
       </item>
-      <item row="0" column="4">
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+
+      <!-- Tipo (vazio mas mantido para compatibilidade) -->
+      <item row="2" column="2">
+       <widget class="QLabel" name="lblTipoTitle">
+        <property name="text"><string></string></property>
+       </widget>
       </item>
+
      </layout>
     </widget>
    </item>
+
+   <!-- RESUMO -->
    <item>
     <widget class="QGroupBox" name="groupResumo">
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="title">
-      <string>Resumo do Mês</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_resumo">
-      <item row="1" column="0">
-       <widget class="QLabel" name="lblKmTotalTitle">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Quilometragem total:</string>
-        </property>
+     <property name="title"><string>Resumo do Mês</string></property>
+     <layout class="QHBoxLayout" name="horizontalLayout_resumo">
+      <property name="spacing"><number>0</number></property>
+
+      <!-- Cards de métricas -->
+      <item>
+       <layout class="QVBoxLayout">
+        <property name="spacing"><number>6</number></property>
+        <item>
+         <widget class="QLabel" name="lblDiasRodadosTitle">
+          <property name="text"><string>Dias rodados</string></property>
+          <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblDiasRodados">
+          <property name="text"><string>0</string></property>
+          <property name="styleSheet"><string>font-weight: 800; font-size: 22px; color: #16a34a;</string></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <item>
+       <widget class="QLabel">
+        <property name="text"><string> </string></property>
+        <property name="styleSheet"><string>color: #e2e8f0; font-size: 28px;</string></property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="lblDiasRodados">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold; color: #2e7d32;</string>
-        </property>
-        <property name="text">
-         <string>0</string>
-        </property>
+
+      <item>
+       <layout class="QVBoxLayout">
+        <property name="spacing"><number>6</number></property>
+        <item>
+         <widget class="QLabel" name="lblDiasParadosTitle">
+          <property name="text"><string>Dias parados</string></property>
+          <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblDiasParados">
+          <property name="text"><string>0</string></property>
+          <property name="styleSheet"><string>font-weight: 800; font-size: 22px; color: #dc2626;</string></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <item>
+       <widget class="QLabel">
+        <property name="text"><string> </string></property>
+        <property name="styleSheet"><string>color: #e2e8f0; font-size: 28px;</string></property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QLabel" name="lblDiasParados">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold; color: #c62828;</string>
-        </property>
-        <property name="text">
-         <string>0</string>
-        </property>
+
+      <item>
+       <layout class="QVBoxLayout">
+        <property name="spacing"><number>6</number></property>
+        <item>
+         <widget class="QLabel" name="lblKmTotalTitle">
+          <property name="text"><string>Quilometragem total</string></property>
+          <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblKmTotal">
+          <property name="text"><string>0 km</string></property>
+          <property name="styleSheet"><string>font-weight: 800; font-size: 22px; color: #4f46e5;</string></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <item>
+       <widget class="QLabel">
+        <property name="text"><string> </string></property>
+        <property name="styleSheet"><string>color: #e2e8f0; font-size: 28px;</string></property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="lblDiasParadosTitle">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Dias parados:</string>
-        </property>
+
+      <item>
+       <layout class="QVBoxLayout">
+        <property name="spacing"><number>6</number></property>
+        <item>
+         <widget class="QLabel" name="lblMediaDiariaTitle">
+          <property name="text"><string>Média por dia rodado</string></property>
+          <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblMediaDiaria">
+          <property name="text"><string>0 km</string></property>
+          <property name="styleSheet"><string>font-weight: 800; font-size: 22px; color: #0284c7;</string></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <item>
+       <widget class="QLabel">
+        <property name="text"><string> </string></property>
+        <property name="styleSheet"><string>color: #e2e8f0; font-size: 28px;</string></property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="lblMediaDiariaTitle">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Média por dia rodado:</string>
-        </property>
-       </widget>
+
+      <item>
+       <layout class="QVBoxLayout">
+        <property name="spacing"><number>6</number></property>
+        <item>
+         <widget class="QLabel" name="lblMaiorDiaTitle">
+          <property name="text"><string>Maior km diário</string></property>
+          <property name="styleSheet"><string>color: #94a3b8; font-size: 11px; font-weight: 600; letter-spacing: 0.3px;</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblMaiorDia">
+          <property name="text"><string>0 km</string></property>
+          <property name="styleSheet"><string>font-weight: 800; font-size: 22px; color: #d97706;</string></property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="lblMediaDiaria">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="text">
-         <string>0 km</string>
-        </property>
-       </widget>
+
+      <item>
+       <spacer>
+        <property name="orientation"><enum>Qt::Horizontal</enum></property>
+        <property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property>
+       </spacer>
       </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="lblKmTotal">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="text">
-         <string>0 km</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lblMaiorDiaTitle">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Maior quilometragem diária:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="lblMaiorDia">
-        <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="text">
-         <string>0 km</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4" rowspan="3">
+
+      <!-- Motivos -->
+      <item>
        <widget class="QGroupBox" name="groupMotivos">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="title">
-         <string>Motivos de parada (contagem)</string>
-        </property>
+        <property name="title"><string>Motivos de parada</string></property>
+        <property name="minimumSize"><size><width>180</width><height>0</height></size></property>
         <layout class="QVBoxLayout" name="verticalLayout_motivos">
+         <property name="contentsMargins"><number>8</number><number>8</number><number>8</number><number>8</number></property>
          <item>
           <widget class="QListWidget" name="listMotivos"/>
          </item>
         </layout>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblDiasRodadosTitle">
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Dias rodados:</string>
-        </property>
-       </widget>
-      </item>
+
      </layout>
     </widget>
    </item>
+
+   <!-- TABELA DIÁRIA -->
    <item>
     <widget class="QGroupBox" name="groupTabela">
-     <property name="title">
-      <string>Quilometragem diária</string>
-     </property>
+     <property name="title"><string>Quilometragem Diária</string></property>
      <layout class="QVBoxLayout" name="verticalLayout_tabela">
+      <property name="spacing"><number>0</number></property>
+      <property name="contentsMargins"><number>8</number><number>8</number><number>8</number><number>8</number></property>
       <item>
        <widget class="QTableWidget" name="tableDiario">
-        <property name="alternatingRowColors">
-         <bool>true</bool>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <column>
-         <property name="text">
-          <string>Data</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Km Inicial</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Km Final</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Total do Dia</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Rodou?</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Motivo</string>
-         </property>
-        </column>
+        <property name="alternatingRowColors"><bool>true</bool></property>
+        <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
+        <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+        <property name="columnCount"><number>6</number></property>
+        <property name="rowCount"><number>0</number></property>
+        <column><property name="text"><string>Data</string></property></column>
+        <column><property name="text"><string>Km Inicial</string></property></column>
+        <column><property name="text"><string>Km Final</string></property></column>
+        <column><property name="text"><string>Total do Dia</string></property></column>
+        <column><property name="text"><string>Rodou?</string></property></column>
+        <column><property name="text"><string>Motivo</string></property></column>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
+
+   <!-- BOTÕES -->
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_acoes">
+     <property name="spacing"><number>10</number></property>
      <item>
       <widget class="QPushButton" name="btnExportarPDF">
-       <property name="text">
-        <string>Exportar PDF</string>
-       </property>
+       <property name="text"><string>Exportar PDF</string></property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnExportarExcel">
-       <property name="text">
-        <string>Exportar Excel</string>
-       </property>
+       <property name="text"><string>Exportar Excel</string></property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnImprimir">
-       <property name="text">
-        <string>Imprimir</string>
-       </property>
+       <property name="text"><string>Imprimir</string></property>
       </widget>
      </item>
      <item>
       <spacer name="spacerAcoes">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
       </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="btnVoltar">
-       <property name="text">
-        <string>Voltar</string>
-       </property>
+       <property name="text"><string>Voltar</string></property>
       </widget>
      </item>
     </layout>
    </item>
+
   </layout>
  </widget>
  <resources/>

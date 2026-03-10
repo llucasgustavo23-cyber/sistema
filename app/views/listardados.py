@@ -1,3 +1,7 @@
+# listardados.py
+from __future__ import annotations
+from typing import Optional
+
 from PySide6.QtWidgets import (
     QWidget,
     QMessageBox,
@@ -6,119 +10,164 @@ from PySide6.QtWidgets import (
     QSizePolicy,
     QAbstractScrollArea,
     QAbstractItemView,
+    QPushButton,
 )
-from PySide6.QtCore import Signal, Qt, QDate
-# Se o Ui_listardados estiver em outro módulo, mantenha este import:
-from .ui_lista import Ui_listardados
-# Caso o Ui_listardados esteja no MESMO arquivo (como você colou acima),
-# comente a linha acima e use:  from __main__ import Ui_listardados
+from PySide6.QtCore import Signal, Qt
+
+from ui_listardados import Ui_ListarAmbulancias
+from app.database import Database
+from modificar import Modificar
 
 
-class listardados(QWidget, Ui_listardados):
+COL_ID      = 0
+COL_CHASSI  = 1
+COL_PLACA   = 2
+COL_MODELO  = 3
+COL_ANO     = 4
+COL_FORMA   = 5
+COL_OFICIAL = 6
+COL_RESERVA = 7
+
+class listardados(QWidget, Ui_ListarAmbulancias):
     gotomenu = Signal()
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent: Optional[QWidget] = None):
+        super().__init__(parent)
         self.setupUi(self)
+        self._db = Database()
 
-        # Configura a tabela conforme solicitado
+        self.btnSalvar.hide()
+
+        self.btnVoltar = QPushButton("Voltar")
+        self.btnVoltar.setObjectName("btnVoltar")
+        self.btnVoltar.setStyleSheet(
+            "QPushButton#btnVoltar {"
+            "  background-color: #6b7280;"
+            "  color: white;"
+            "  padding: 10px 18px;"
+            "  border-radius: 10px;"
+            "  font-weight: 600;"
+            "  border: none;"
+            "}"
+            "QPushButton#btnVoltar:hover { background-color: #4b5563; }"
+            "QPushButton#btnVoltar:pressed { background-color: #374151; }"
+        )
+        self.hboxButtons.addWidget(self.btnVoltar)
+
         self._setup_table()
-
-        # Ligações (botões, etc.)
         self._wire()
+        self.carregar_dados_do_banco()
 
-    # --------------------------------------------------------
-    # Ligações
-    # --------------------------------------------------------
     def _wire(self) -> None:
-        # Na UI o botão se chama "pushButton" (VOLTAR)
-        if hasattr(self, "pushButton") and self.pushButton:
-            self.pushButton.clicked.connect(self.gotomenu.emit)
-        else:
-            print("[listardados] Aviso: pushButton não encontrado na UI")
+        self.btnVoltar.clicked.connect(self.gotomenu.emit)
+        self.btnModificar.clicked.connect(self._on_modificar)
+        self.btnExcluir.clicked.connect(self._on_excluir)
 
-        # (Opcional) botaoExcluir — você pode conectar aqui também
-        # if hasattr(self, "botaoExcluir") and self.botaoExcluir:
-        #     self.botaoExcluir.clicked.connect(self._on_excluir)
-
-    # --------------------------------------------------------
-    # Ajustes COMPLETOS da QTableWidget
-    # --------------------------------------------------------
     def _setup_table(self) -> None:
-        """
-        Deixa a QTableWidget ocupar toda a largura da janela, com texto visível
-        (sem elipse), suporte a quebra de linha e linhas ajustadas ao conteúdo.
-        """
-        table = self.tableWidget  # do Ui_listardados
+        t = self.tabelaAmbulancias
+        t.setColumnCount(8)
+        t.setHorizontalHeaderItem(0, QTableWidgetItem("ID"))
+        t.setHorizontalHeaderItem(1, QTableWidgetItem("Chassi"))
+        t.setHorizontalHeaderItem(2, QTableWidgetItem("Placa"))
+        t.setHorizontalHeaderItem(3, QTableWidgetItem("Modelo"))
+        t.setHorizontalHeaderItem(4, QTableWidgetItem("Ano"))
+        t.setHorizontalHeaderItem(5, QTableWidgetItem("Forma de aquisição"))
+        t.setHorizontalHeaderItem(6, QTableWidgetItem("Oficial"))
+        t.setHorizontalHeaderItem(7, QTableWidgetItem("Reserva"))
 
-        # 1) Colunas ocupam TODO o espaço horizontal disponível
-        header = table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.Stretch)
-        header.setStretchLastSection(True)  # redundante com Stretch, mas mantém robustez
+        header = t.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(COL_RESERVA, QHeaderView.Stretch)
+        t.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        t.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        t.setTextElideMode(Qt.ElideNone)
+        t.setWordWrap(True)
+        t.setSelectionBehavior(QAbstractItemView.SelectRows)
+        t.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        t.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
+        t.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-        # 2) Expansão adequada dentro do layout
-        table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
-        # 3) Ajuste fino de tamanho baseado em conteúdo (sem deixar espaço “morto”)
-        table.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
-
-        # 4) Mostrar texto COMPLETO (sem "...")
-        table.setTextElideMode(Qt.ElideNone)
-
-        # 5) Permitir quebra de linha dentro da célula
-        table.setWordWrap(True)
-
-        # 6) Ajustar altura das linhas conforme o conteúdo atual
-        table.resizeRowsToContents()
-
-        # 7) Comportamento de seleção mais amigável (linha inteira)
-        table.setSelectionBehavior(QAbstractItemView.SelectRows)
-
-        # 8) Como as colunas esticam, não precisamos de scroll horizontal
-        table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-        # 9) (Opcional) Rolagem mais suave
-        table.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
-        table.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
-
-        # 10) (Opcional) Cores alternadas por linha para legibilidade
-        # table.setAlternatingRowColors(True)
-
-        # 11) Reajusta a altura quando o conteúdo mudar (ex.: depois de carregar dados)
-        # Se preferir, você pode chamar `self._auto_resize()` manualmente após preencher a tabela.
-        table.itemChanged.connect(self._auto_resize)
-
-        print("[listardados] Tabela ajustada com sucesso.")
-
-    def _auto_resize(self, *args):
-        """Recalcula a altura das linhas quando o conteúdo muda."""
+    def carregar_dados_do_banco(self) -> None:
         try:
-            self.tableWidget.resizeRowsToContents()
-        except Exception:
-            pass
+            rows = self._db.listar_ambulancias()
+        except Exception as e:
+            QMessageBox.critical(self, "Erro", f"Não foi possível carregar os dados:\n{e}")
+            return
 
-    # --------------------------------------------------------
-    # Exemplo (opcional): preencher a tabela e ver os ajustes
-    # --------------------------------------------------------
-    def carregar_dados_exemplo(self):
-        """
-        Exemplo de preenchimento para testar os ajustes.
-        Remova/adicione conforme sua fonte de dados real.
-        """
-        dados = [
-            ["1", "9BWZZZ377VT004251", "Modelo X muito longo com variações", "2024",
-             "Doação de convênio estadual", "Compra direta", "SIM", "NÃO"],
-            ["2", "9BWZZZ377VT004252", "Modelo Y", "2023",
-             "Licitação 123/2023", "Licitação", "NÃO", "SIM"],
-        ]
+        t = self.tabelaAmbulancias
+        t.blockSignals(True)
+        t.setRowCount(0)
 
-        self.tableWidget.setRowCount(len(dados))
-        for r, linha in enumerate(dados):
-            for c, valor in enumerate(linha):
-                item = QTableWidgetItem(str(valor))
-                # Tooltip ajuda quando o texto é bem grande
-                item.setToolTip(str(valor))
-                self.tableWidget.setItem(r, c, item)
+        for rec in rows:
+            r = t.rowCount()
+            t.insertRow(r)
+            oficial = bool(rec.get("uso_oficial"))
+            valores = [
+                str(rec.get("id_ambulancia") or ""),
+                str(rec.get("chassi") or ""),
+                str(rec.get("placa") or ""),
+                str(rec.get("modelo_nome") or ""),
+                str(rec.get("ano") or ""),
+                str(rec.get("forma_nome") or ""),   # forma de aquisição (sem tipo duplicado)
+                "SIM" if oficial else "NÃO",
+                "NÃO" if oficial else "SIM",
+            ]
+            for c, val in enumerate(valores):
+                item = QTableWidgetItem(val)
+                item.setToolTip(val)
+                item.setTextAlignment(Qt.AlignCenter)
+                t.setItem(r, c, item)
 
-        # Depois de preencher, ajuste novamente as linhas
-        self._auto_resize()
+        t.resizeRowsToContents()
+        t.blockSignals(False)
+
+    def _on_modificar(self) -> None:
+        chassi = self._chassi_selecionado()
+        if not chassi:
+            QMessageBox.information(self, "Selecione", "Selecione uma ambulância na tabela.")
+            return
+
+        dlg = Modificar(chassi=chassi, parent=self)
+        if dlg.exec() == Modificar.Accepted:
+            self.carregar_dados_do_banco()
+
+    def _on_excluir(self) -> None:
+        chassi = self._chassi_selecionado()
+        if not chassi:
+            QMessageBox.information(self, "Selecione", "Selecione uma ambulância na tabela.")
+            return
+
+        resp = QMessageBox.question(
+            self,
+            "Confirmar exclusão",
+            f"Deseja excluir a ambulância com chassi:\n{chassi}?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if resp != QMessageBox.Yes:
+            return
+
+        try:
+            ok = self._db.excluir_ambulancia_por_chassi(chassi)
+        except Exception as e:
+            QMessageBox.critical(self, "Erro", f"Não foi possível excluir:\n{e}")
+            return
+
+        if ok:
+            QMessageBox.information(self, "Sucesso", "Ambulância excluída com sucesso.")
+            self.carregar_dados_do_banco()
+        else:
+            QMessageBox.warning(self, "Aviso", "Nenhuma linha removida. Verifique o chassi.")
+
+    def _chassi_selecionado(self) -> str:
+        t = self.tabelaAmbulancias
+        rows = t.selectionModel().selectedRows()
+        if not rows:
+            return ""
+        row = rows[0].row()
+        item = t.item(row, COL_CHASSI)
+        return item.text().strip() if item else ""
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.carregar_dados_do_banco()

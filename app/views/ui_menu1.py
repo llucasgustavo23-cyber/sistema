@@ -1,325 +1,291 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MENU1.UI'
-##
-## Created by: Qt User Interface Compiler version 6.10.2
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
+## ui_menu1.py — redesenhado para seguir o padrão visual do sistema
+##               sidebar escura + cards de ação no conteúdo principal
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QPushButton,
-    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+from PySide6.QtCore import QCoreApplication, QMetaObject, QSize, Qt
+from PySide6.QtGui import QFont, QIcon
+from PySide6.QtWidgets import (
+    QFrame, QGridLayout, QPushButton, QLabel,
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget,
+)
+
+_STYLESHEET = u"""
+/* ============================================================
+   BASE
+   ============================================================ */
+QWidget#Form {
+    background-color: #f0f4f8;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 15px;
+    color: #1e293b;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+QFrame#menuLateral {
+    background-color: #7f1d1d;
+    border: none;
+    border-radius: 0px;
+}
+
+/* Logo/título da sidebar */
+QLabel#lblAppName {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+QLabel#lblAppSub {
+    color: rgba(255,255,255,0.45);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+}
+
+/* Divisor da sidebar */
+QFrame#sidebarDivider {
+    background-color: rgba(255,255,255,0.10);
+    border: none;
+    max-height: 1px;
+}
+
+/* Botões da sidebar — estado normal */
+QPushButton#btnInicio,
+QPushButton#btnConfig,
+QPushButton#pushButton {
+    background-color: transparent;
+    color: rgba(255,255,255,0.90);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+}
+
+QPushButton#btnInicio:hover,
+QPushButton#btnConfig:hover,
+QPushButton#pushButton:hover {
+    background-color: rgba(255,255,255,0.08);
+    color: #ffffff;
+}
+
+QPushButton#btnInicio:pressed,
+QPushButton#btnConfig:pressed,
+QPushButton#pushButton:pressed {
+    background-color: rgba(79,70,229,0.35);
+    color: #ffffff;
+}
+
+/* Botão ativo na sidebar */
+QPushButton#btnInicio[active="true"] {
+    background-color: #dc2626;
+    color: #ffffff;
+}
+
+/* ============================================================
+   ÁREA DE CONTEÚDO
+   ============================================================ */
+QFrame#contentArea {
+    background-color: #f0f4f8;
+    border: none;
+}
+
+/* ============================================================
+   CARDS DE AÇÃO (botões grandes)
+   ============================================================ */
+QPushButton#btnCadastroAmb,
+QPushButton#btnModificarAmb,
+QPushButton#btnRelatorio,
+QPushButton#btnInserirDados {
+    background-color: #ffffff;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 16px;
+}
+
+QPushButton#btnCadastroAmb:hover,
+QPushButton#btnModificarAmb:hover,
+QPushButton#btnRelatorio:hover,
+QPushButton#btnInserirDados:hover {
+    background-color: #f8fafc;
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+QPushButton#btnCadastroAmb:pressed,
+QPushButton#btnModificarAmb:pressed,
+QPushButton#btnRelatorio:pressed,
+QPushButton#btnInserirDados:pressed {
+    background-color: #fee2e2;
+    border-color: #dc2626;
+}
+"""
+
 
 class Ui_menu(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(1264, 664)
-        Form.setStyleSheet(u"background-color: rgb(170, 0, 0);\n"
-"background-color: rgb(171, 171, 171);")
-        self.gridLayout_2 = QGridLayout(Form)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        Form.resize(1100, 660)
+        Form.setStyleSheet(_STYLESHEET)
+
+        # ── Layout raiz: sidebar | conteúdo ───────────────────────
+        self.rootLayout = QGridLayout(Form)
+        self.rootLayout.setContentsMargins(0, 0, 0, 0)
+        self.rootLayout.setSpacing(0)
+
+        # ── SIDEBAR ───────────────────────────────────────────────
         self.menuLateral = QFrame(Form)
         self.menuLateral.setObjectName(u"menuLateral")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.menuLateral.sizePolicy().hasHeightForWidth())
-        self.menuLateral.setSizePolicy(sizePolicy)
-        self.menuLateral.setMinimumSize(QSize(160, 0))
-        self.menuLateral.setMaximumSize(QSize(160, 16777215))
-        palette = QPalette()
-        brush = QBrush(QColor(0, 0, 0, 255))
-        brush.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush)
-        brush1 = QBrush(QColor(255, 79, 79, 255))
-        brush1.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Light, brush1)
-        brush2 = QBrush(QColor(239, 39, 39, 255))
-        brush2.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Midlight, brush2)
-        brush3 = QBrush(QColor(111, 0, 0, 255))
-        brush3.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Dark, brush3)
-        brush4 = QBrush(QColor(149, 0, 0, 255))
-        brush4.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Mid, brush4)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush)
-        brush5 = QBrush(QColor(255, 255, 255, 255))
-        brush5.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.BrightText, brush5)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ButtonText, brush)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Window, brush)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Shadow, brush)
-        brush6 = QBrush(QColor(239, 127, 127, 255))
-        brush6.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.AlternateBase, brush6)
-        brush7 = QBrush(QColor(255, 255, 220, 255))
-        brush7.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ToolTipBase, brush7)
-        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ToolTipText, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.WindowText, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Button, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Light, brush1)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Midlight, brush2)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Dark, brush3)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Mid, brush4)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Text, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.BrightText, brush5)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ButtonText, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Window, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Shadow, brush)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.AlternateBase, brush6)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ToolTipBase, brush7)
-        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ToolTipText, brush)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.WindowText, brush3)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Button, brush)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Light, brush1)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Midlight, brush2)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Dark, brush3)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Mid, brush4)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, brush3)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.BrightText, brush5)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, brush3)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Window, brush)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Shadow, brush)
-        brush8 = QBrush(QColor(223, 0, 0, 255))
-        brush8.setStyle(Qt.BrushStyle.SolidPattern)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.AlternateBase, brush8)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ToolTipBase, brush7)
-        palette.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ToolTipText, brush)
-        self.menuLateral.setPalette(palette)
-        self.menuLateral.setStyleSheet(u"background-color: rgb(0, 0, 0);")
-        self.menuLateral.setFrameShape(QFrame.StyledPanel)
+        self.menuLateral.setFixedWidth(200)
+        self.menuLateral.setSizePolicy(
+            QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        )
+        self.menuLateral.setFrameShape(QFrame.NoFrame)
+
         self.menuLayout = QVBoxLayout(self.menuLateral)
-        self.menuLayout.setSpacing(8)
+        self.menuLayout.setContentsMargins(12, 24, 12, 24)
+        self.menuLayout.setSpacing(4)
         self.menuLayout.setObjectName(u"menuLayout")
-        self.menuLayout.setContentsMargins(8, 8, 8, 8)
+
+        # — Logo ——————————————————————————————————————————————————
+        self.lblAppName = QLabel(self.menuLateral)
+        self.lblAppName.setObjectName(u"lblAppName")
+        self.lblAppName.setContentsMargins(8, 0, 0, 0)
+        self.menuLayout.addWidget(self.lblAppName)
+
+        self.lblAppSub = QLabel(self.menuLateral)
+        self.lblAppSub.setObjectName(u"lblAppSub")
+        self.lblAppSub.setContentsMargins(8, 0, 0, 0)
+        self.menuLayout.addWidget(self.lblAppSub)
+
+        self.menuLayout.addSpacing(16)
+
+        self.sidebarDivider = QFrame(self.menuLateral)
+        self.sidebarDivider.setObjectName(u"sidebarDivider")
+        self.sidebarDivider.setFrameShape(QFrame.HLine)
+        self.menuLayout.addWidget(self.sidebarDivider)
+
+        self.menuLayout.addSpacing(12)
+
+        # — Botões da sidebar ————————————————————————————————————
         self.btnInicio = QPushButton(self.menuLateral)
         self.btnInicio.setObjectName(u"btnInicio")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.btnInicio.sizePolicy().hasHeightForWidth())
-        self.btnInicio.setSizePolicy(sizePolicy1)
-        palette1 = QPalette()
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.WindowText, brush5)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Button, brush)
-        brush9 = QBrush(QColor(255, 127, 127, 255))
-        brush9.setStyle(Qt.BrushStyle.SolidPattern)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Light, brush9)
-        brush10 = QBrush(QColor(255, 63, 63, 255))
-        brush10.setStyle(Qt.BrushStyle.SolidPattern)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Midlight, brush10)
-        brush11 = QBrush(QColor(127, 0, 0, 255))
-        brush11.setStyle(Qt.BrushStyle.SolidPattern)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Dark, brush11)
-        brush12 = QBrush(QColor(170, 0, 0, 255))
-        brush12.setStyle(Qt.BrushStyle.SolidPattern)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Mid, brush12)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Text, brush5)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.BrightText, brush5)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ButtonText, brush5)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Window, brush)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Shadow, brush)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.AlternateBase, brush12)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ToolTipBase, brush7)
-        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.ToolTipText, brush)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.WindowText, brush5)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Button, brush)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Light, brush9)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Midlight, brush10)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Dark, brush11)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Mid, brush12)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Text, brush5)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.BrightText, brush5)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ButtonText, brush5)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Window, brush)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Shadow, brush)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.AlternateBase, brush12)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ToolTipBase, brush7)
-        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.ToolTipText, brush)
-        brush13 = QBrush(QColor(122, 122, 122, 255))
-        brush13.setStyle(Qt.BrushStyle.SolidPattern)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.WindowText, brush13)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Button, brush)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Light, brush9)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Midlight, brush10)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Dark, brush11)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Mid, brush12)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, brush13)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.BrightText, brush5)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, brush13)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Window, brush)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Shadow, brush)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.AlternateBase, brush12)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ToolTipBase, brush7)
-        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ToolTipText, brush)
-        self.btnInicio.setPalette(palette1)
-        font = QFont()
-        font.setFamilies([u"Arial"])
-        font.setPointSize(10)
-        font.setBold(True)
-        self.btnInicio.setFont(font)
-        self.btnInicio.setStyleSheet(u"border-bottom-color: rgb(170, 0, 0);\n"
-"alternate-background-color: rgb(170, 0, 0);\n"
-"border-color: rgb(170, 0, 0);")
-        icon = QIcon()
-        icon.addFile(u"c:/Users/61348016/Downloads/ícone-do-vetor-da-casa-ilustração-home-preto-e-branco-ícone-linear-contínuo-da-casa-para-aplicações-móveis-93005323.webp", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.btnInicio.setIcon(icon)
-        self.btnInicio.setIconSize(QSize(30, 30))
-        self.btnInicio.setAutoDefault(False)
-        self.btnInicio.setFlat(False)
-
+        self.btnInicio.setSizePolicy(
+            QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        )
+        self.btnInicio.setIconSize(QSize(18, 18))
         self.menuLayout.addWidget(self.btnInicio)
 
         self.btnConfig = QPushButton(self.menuLateral)
         self.btnConfig.setObjectName(u"btnConfig")
-        self.btnConfig.setEnabled(True)
-        sizePolicy1.setHeightForWidth(self.btnConfig.sizePolicy().hasHeightForWidth())
-        self.btnConfig.setSizePolicy(sizePolicy1)
-        self.btnConfig.setMaximumSize(QSize(142, 16777215))
-        font1 = QFont()
-        font1.setFamilies([u"Arial"])
-        font1.setPointSize(9)
-        font1.setBold(True)
-        self.btnConfig.setFont(font1)
-        self.btnConfig.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"background-color: rgb(0, 0, 0);")
-        icon1 = QIcon()
-        icon1.addFile(u"c:/Users/61348016/Downloads/Designer (9).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.btnConfig.setIcon(icon1)
-        self.btnConfig.setIconSize(QSize(40, 30))
-        self.btnConfig.setCheckable(False)
-        self.btnConfig.setFlat(False)
-
+        self.btnConfig.setSizePolicy(
+            QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        )
+        self.btnConfig.setIconSize(QSize(18, 18))
         self.menuLayout.addWidget(self.btnConfig)
 
         self.pushButton = QPushButton(self.menuLateral)
         self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setFont(font1)
-        self.pushButton.setStyleSheet(u"color: rgb(255, 255, 255);")
-
+        self.pushButton.setSizePolicy(
+            QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        )
+        self.pushButton.setIconSize(QSize(18, 18))
         self.menuLayout.addWidget(self.pushButton)
 
-        self.pushButton_2 = QPushButton(self.menuLateral)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-        self.pushButton_2.setFont(font1)
-        self.pushButton_2.setStyleSheet(u"color: rgb(255, 255, 255);")
-
-        self.menuLayout.addWidget(self.pushButton_2)
-
-        self.menuSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
+        # espaçador empurra tudo para cima
+        self.menuSpacer = QSpacerItem(
+            20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
+        )
         self.menuLayout.addItem(self.menuSpacer)
 
+        self.rootLayout.addWidget(self.menuLateral, 0, 0, 1, 1)
 
-        self.gridLayout_2.addWidget(self.menuLateral, 0, 0, 1, 1)
+        # ── ÁREA DE CONTEÚDO ──────────────────────────────────────
+        self.contentArea = QFrame(Form)
+        self.contentArea.setObjectName(u"contentArea")
+        self.contentArea.setFrameShape(QFrame.NoFrame)
 
+        self.contentLayout = QVBoxLayout(self.contentArea)
+        self.contentLayout.setContentsMargins(28, 28, 28, 28)
+        self.contentLayout.setSpacing(20)
+
+        # — Grid de cards ————————————————————————————————————————
         self.gridLayout = QGridLayout()
-        self.gridLayout.setSpacing(14)
+        self.gridLayout.setSpacing(16)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setContentsMargins(6, 6, 6, 6)
-        self.btnCadastroAmb = QPushButton(Form)
-        self.btnCadastroAmb.setObjectName(u"btnCadastroAmb")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.btnCadastroAmb.sizePolicy().hasHeightForWidth())
-        self.btnCadastroAmb.setSizePolicy(sizePolicy2)
-        self.btnCadastroAmb.setMinimumSize(QSize(250, 150))
-        self.btnCadastroAmb.setFont(font)
-        self.btnCadastroAmb.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
-"color: rgb(255, 255, 255);")
-        icon2 = QIcon()
-        icon2.addFile(u"c:/Users/61348016/Downloads/Designer (5).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off) #c:\Users\61348016\Downloads\Designer (5).png
-        self.btnCadastroAmb.setIcon(icon2)
-        self.btnCadastroAmb.setIconSize(QSize(128, 128))
-        self.btnCadastroAmb.setFlat(False)
 
+        self.btnCadastroAmb = QPushButton(self.contentArea)
+        self.btnCadastroAmb.setObjectName(u"btnCadastroAmb")
+        _expand = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.btnCadastroAmb.setSizePolicy(_expand)
+        self.btnCadastroAmb.setIconSize(QSize(64, 64))
         self.gridLayout.addWidget(self.btnCadastroAmb, 0, 0, 1, 1)
 
-        self.btnModificarAmb = QPushButton(Form)
+        self.btnModificarAmb = QPushButton(self.contentArea)
         self.btnModificarAmb.setObjectName(u"btnModificarAmb")
-        sizePolicy2.setHeightForWidth(self.btnModificarAmb.sizePolicy().hasHeightForWidth())
-        self.btnModificarAmb.setSizePolicy(sizePolicy2)
-        self.btnModificarAmb.setMinimumSize(QSize(250, 150))
-        self.btnModificarAmb.setFont(font)
-        self.btnModificarAmb.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
-"color: rgb(255, 255, 255);")
-        icon3 = QIcon()
-        icon3.addFile(u"c:/Users/61348016/Downloads/Designer (6).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.btnModificarAmb.setIcon(icon3)
-        self.btnModificarAmb.setIconSize(QSize(128, 128))
-
+        self.btnModificarAmb.setSizePolicy(_expand)
+        self.btnModificarAmb.setIconSize(QSize(64, 64))
         self.gridLayout.addWidget(self.btnModificarAmb, 0, 1, 1, 1)
 
-        self.btnRelatorio = QPushButton(Form)
+        self.btnRelatorio = QPushButton(self.contentArea)
         self.btnRelatorio.setObjectName(u"btnRelatorio")
-        sizePolicy2.setHeightForWidth(self.btnRelatorio.sizePolicy().hasHeightForWidth())
-        self.btnRelatorio.setSizePolicy(sizePolicy2)
-        self.btnRelatorio.setMinimumSize(QSize(250, 150))
-        self.btnRelatorio.setFont(font)
-        self.btnRelatorio.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
-"color: rgb(255, 255, 255);")
-        icon4 = QIcon()
-        icon4.addFile(u"c:/Users/61348016/Downloads/Designer (7).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.btnRelatorio.setIcon(icon4)
-        self.btnRelatorio.setIconSize(QSize(128, 128))
-
+        self.btnRelatorio.setSizePolicy(_expand)
+        self.btnRelatorio.setIconSize(QSize(64, 64))
         self.gridLayout.addWidget(self.btnRelatorio, 1, 0, 1, 1)
 
-        self.btnInserirDados = QPushButton(Form)
+        self.btnInserirDados = QPushButton(self.contentArea)
         self.btnInserirDados.setObjectName(u"btnInserirDados")
-        sizePolicy2.setHeightForWidth(self.btnInserirDados.sizePolicy().hasHeightForWidth())
-        self.btnInserirDados.setSizePolicy(sizePolicy2)
-        self.btnInserirDados.setMinimumSize(QSize(250, 150))
-        self.btnInserirDados.setFont(font)
-        self.btnInserirDados.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
-"color: rgb(255, 255, 255);")
-        icon5 = QIcon()
-        icon5.addFile(u"c:/Users/61348016/Downloads/Designer (8).png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.btnInserirDados.setIcon(icon5)
-        self.btnInserirDados.setIconSize(QSize(128, 128))
-
+        self.btnInserirDados.setSizePolicy(_expand)
+        self.btnInserirDados.setIconSize(QSize(64, 64))
         self.gridLayout.addWidget(self.btnInserirDados, 1, 1, 1, 1)
 
+        self.contentLayout.addLayout(self.gridLayout)
 
-        self.gridLayout_2.addLayout(self.gridLayout, 0, 1, 1, 1)
-
+        self.rootLayout.addWidget(self.contentArea, 0, 1, 1, 1)
 
         self.retranslateUi(Form)
-
-        self.btnInicio.setDefault(False)
-
-
         QMetaObject.connectSlotsByName(Form)
     # setupUi
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.btnInicio.setText(QCoreApplication.translate("Form", u"In\u00edcio", None))
-        self.btnConfig.setText(QCoreApplication.translate("Form", u"Ajuste", None))
-        self.pushButton.setText(QCoreApplication.translate("Form", u"Cadastrar Usu\u00e1rio", None))
-        self.pushButton_2.setText(QCoreApplication.translate("Form", u"Dados Ambul\u00e2ncias", None))
-        self.btnCadastroAmb.setText(QCoreApplication.translate("Form", u"CADASTRO DE AMBUL\u00c2NCIA", None))
-        self.btnModificarAmb.setText(QCoreApplication.translate("Form", u"MODIFICAR AMBUL\u00c2NCIA", None))
-        self.btnRelatorio.setText(QCoreApplication.translate("Form", u"RELAT\u00d3RIO", None))
-        self.btnInserirDados.setText(QCoreApplication.translate("Form", u"INSERIR DADOS", None))
+        Form.setWindowTitle(
+            QCoreApplication.translate("Form", u"Sistema de Ambulâncias", None)
+        )
+        self.lblAppName.setText(
+            QCoreApplication.translate("Form", u"Ambulâncias", None)
+        )
+        self.lblAppSub.setText(
+            QCoreApplication.translate("Form", u"Sistema de Gestão", None)
+        )
+        self.btnInicio.setText(
+            QCoreApplication.translate("Form", u"  Início", None)
+        )
+        self.btnConfig.setText(
+            QCoreApplication.translate("Form", u"  Ajuste", None)
+        )
+        self.pushButton.setText(
+            QCoreApplication.translate("Form", u"  Cadastrar Usuário", None)
+        )
+        self.btnCadastroAmb.setText(
+            QCoreApplication.translate("Form", u"Cadastro de\nAmbulância", None)
+        )
+        self.btnModificarAmb.setText(
+            QCoreApplication.translate("Form", u"Ambulâncias\nCadastradas", None)
+        )
+        self.btnRelatorio.setText(
+            QCoreApplication.translate("Form", u"Relatório", None)
+        )
+        self.btnInserirDados.setText(
+            QCoreApplication.translate("Form", u"Inserir Dados", None)
+        )
     # retranslateUi
-

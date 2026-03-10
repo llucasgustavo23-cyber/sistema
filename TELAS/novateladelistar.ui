@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ListarAmbulancias</class>
+ <widget class="QWidget" name="ListarAmbulancias">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>980</width>
+    <height>680</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Ambulâncias Cadastradas</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+/* ============================
+   ESTILO GERAL
+============================ */
+QWidget {
+    background: #f3f4f6;
+    font-family: &quot;Segoe UI&quot;, Arial;
+    color: #1f2937;
+    font-size: 14px;
+}
+
+/* ============================
+   TÍTULO DA PÁGINA
+============================ */
+QLabel#tituloPagina {
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+    padding: 6px 4px 12px 4px;
+}
+
+/* ============================
+   CARD PRINCIPAL DA TABELA
+============================ */
+QFrame#cardTabela {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    padding: 14px;
+}
+
+/* ============================
+   TABELA
+============================ */
+QTableWidget {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    gridline-color: #e5e7eb;
+    selection-background-color: #4f46e5;
+    selection-color: white;
+    alternate-background-color: #f9fafb;
+}
+
+QHeaderView::section {
+    background: #f1f5f9;
+    color: #1f2937;
+    padding: 10px;
+    border: none;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+QTableWidget::item:hover {
+    background: #e0e7ff;
+    color: #1e1b4b;
+}
+
+/* ============================
+   BOTÕES
+============================ */
+QPushButton {
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+}
+
+QPushButton#btnModificar {
+    background-color: #2563eb;
+    color: white;
+}
+QPushButton#btnModificar:hover { background-color: #1d4ed8; }
+QPushButton#btnModificar:pressed { background-color: #1e40af; }
+
+QPushButton#btnExcluir {
+    background-color: #dc2626;
+    color: white;
+}
+QPushButton#btnExcluir:hover { background-color: #b91c1c; }
+QPushButton#btnExcluir:pressed { background-color: #991b1b; }
+
+QPushButton#btnSalvar {
+    background-color: #16a34a;
+    color: white;
+}
+QPushButton#btnSalvar:hover { background-color: #15803d; }
+QPushButton#btnSalvar:pressed { background-color: #166534; }
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>12</number>
+   </property>
+   <property name="leftMargin">
+    <number>16</number>
+   </property>
+   <property name="topMargin">
+    <number>16</number>
+   </property>
+   <property name="rightMargin">
+    <number>16</number>
+   </property>
+   <property name="bottomMargin">
+    <number>16</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="tituloPagina">
+     <property name="text">
+      <string>Ambulâncias cadastradas</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="cardTabela">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="vboxCard">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>12</number>
+      </property>
+      <property name="topMargin">
+       <number>12</number>
+      </property>
+      <property name="rightMargin">
+       <number>12</number>
+      </property>
+      <property name="bottomMargin">
+       <number>12</number>
+      </property>
+      <item>
+       <widget class="QTableWidget" name="tabelaAmbulancias">
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="showGrid">
+         <bool>true</bool>
+        </property>
+        <property name="gridStyle">
+         <enum>Qt::SolidLine</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="cornerButtonEnabled">
+         <bool>false</bool>
+        </property>
+        <property name="rowCount">
+         <number>0</number>
+        </property>
+        <property name="columnCount">
+         <number>8</number>
+        </property>
+        <column>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Chassi</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Modelo</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Ano</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Forma de aquisição</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Tipo de aquisição</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Oficial</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Reserva</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="hboxButtons">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="btnModificar">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);</string>
+          </property>
+          <property name="text">
+           <string>Modificar</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="spacerLeft">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnExcluir">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);</string>
+          </property>
+          <property name="text">
+           <string>Excluir</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnSalvar">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);
+border-color: rgb(0, 0, 0);</string>
+          </property>
+          <property name="text">
+           <string>Salvar</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -179,19 +179,7 @@ class Ui_modifca(object):
 
         self.btnrow.addItem(self.horizontalSpacer_4)
 
-        self.pushButton = QPushButton(Form)
-        self.pushButton.setObjectName(u"pushButton")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
-        self.pushButton.setSizePolicy(sizePolicy1)
-        self.pushButton.setFocusPolicy(Qt.NoFocus)
-        self.pushButton.setCheckable(False)
-        self.pushButton.setAutoDefault(False)
-        self.pushButton.setFlat(False)
 
-        self.btnrow.addWidget(self.pushButton)
 
         self.buttonBox = QDialogButtonBox(Form)
         self.buttonBox.setObjectName(u"buttonBox")
@@ -211,9 +199,6 @@ class Ui_modifca(object):
 
         self.retranslateUi(Form)
 
-        self.pushButton.setDefault(False)
-
-
         QMetaObject.connectSlotsByName(Form)
     # setupUi
 
@@ -225,15 +210,15 @@ class Ui_modifca(object):
 "QLabel.formLabel{font:600 10pt 'Segoe UI'; color:#444; margin-bottom:4px;}\n"
 "QLineEdit,QComboBox,QDateEdit,QSpinBox{background:#f7f7f7;border:1px solid #cfcfcf;border-radius:6px;padding:8px 10px; font:10pt 'Segoe UI';}", None))
         self.denominacao.setPlaceholderText(QCoreApplication.translate("Form", u"Insira aqui", None))
-        self.comboBox.setItemText(0, QCoreApplication.translate("Form", u"1", None))
-        self.comboBox.setItemText(1, QCoreApplication.translate("Form", u"2", None))
-        self.comboBox.setItemText(2, QCoreApplication.translate("Form", u"3", None))
-        self.comboBox.setItemText(3, QCoreApplication.translate("Form", u"4", None))
-        self.comboBox.setItemText(4, QCoreApplication.translate("Form", u"5", None))
+        self.comboBox.setItemText(0, QCoreApplication.translate("Form", u"Ford", None))
+        self.comboBox.setItemText(1, QCoreApplication.translate("Form", u"Fiat", None))
+        self.comboBox.setItemText(2, QCoreApplication.translate("Form", u"Honda", None))
+        self.comboBox.setItemText(3, QCoreApplication.translate("Form", u"Toyota", None))
+        self.comboBox.setItemText(4, QCoreApplication.translate("Form", u"Mercedez", None))
 
-        self.tipo.setItemText(0, QCoreApplication.translate("Form", u"Compra", None))
-        self.tipo.setItemText(1, QCoreApplication.translate("Form", u"Doa\u00e7\u00e3o", None))
-        self.tipo.setItemText(2, QCoreApplication.translate("Form", u"Loca\u00e7\u00e3o", None))
+        self.tipo.setItemText(0, QCoreApplication.translate("Form", u"Doação", None))
+        self.tipo.setItemText(1, QCoreApplication.translate("Form", u"Compra", None))
+        self.tipo.setItemText(2, QCoreApplication.translate("Form", u"Emenda parlamentar", None))
 
         self.lbl_cnes.setStyleSheet(QCoreApplication.translate("Form", u"QLabel { font:600 10pt \"Segoe UI\"; color:#444; margin-bottom:4px; }", None))
         self.lbl_cnes.setText(QCoreApplication.translate("Form", u"CNES", None))
@@ -258,6 +243,5 @@ class Ui_modifca(object):
         self.lbl_modelo.setStyleSheet(QCoreApplication.translate("Form", u"QLabel { font:600 10pt \"Segoe UI\"; color:#444; margin-bottom:4px; }", None))
         self.lbl_modelo.setText(QCoreApplication.translate("Form", u"Placa", None))
         self.radioButton_2.setText(QCoreApplication.translate("Form", u"Oficial", None))
-        self.pushButton.setText(QCoreApplication.translate("Form", u"Ambul\u00e2ncias Cadastradas", None))
     # retranslateUi
 

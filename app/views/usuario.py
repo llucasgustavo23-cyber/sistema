@@ -202,6 +202,10 @@ class usuario(QDialog, Ui_usuario):
         # Botão cadastrar
         self.btnEntrar.clicked.connect(self._on_submit)
 
+        # Botão cancelar → fecha o diálogo e emite sinal para o menu
+        self.btnCancelar.clicked.connect(self.reject)
+        self.btnCancelar.clicked.connect(self.gotomenu.emit)
+
         # Enter no campo senha → cadastrar
         self.lineEdit_2.returnPressed.connect(self._on_submit)
 
@@ -264,7 +268,7 @@ class usuario(QDialog, Ui_usuario):
 
         self._feedback_inline("Usuário cadastrado com sucesso!", success=True)
 
-        # ✅ Opcional: limpa os campos para novo cadastro
+        # Limpa os campos para novo cadastro
         self.clear_form()
         self.lineEdit.setFocus()
 
@@ -302,15 +306,16 @@ class usuario(QDialog, Ui_usuario):
         self.lineEdit_2.clear()
         try:
             self.lblSubtitulo.setText("Crie um usuário para continuar")
-            self.lblSubtitulo.setStyleSheet("color: #6b7280;")
+            self.lblSubtitulo.setStyleSheet("color: rgba(255,255,255,0.75);")
         except Exception:
             pass
 
     # ------------------------------------------------------------------
-    # ESC fecha o diálogo
+    # ESC fecha o diálogo e volta ao menu
     # ------------------------------------------------------------------
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.reject()
+            self.gotomenu.emit()
             return
         super().keyPressEvent(event)

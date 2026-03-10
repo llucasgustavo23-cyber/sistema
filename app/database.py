@@ -297,11 +297,14 @@ class Database:
             conn.close()
 
     def _get_forma_id_por_texto(self, forma_texto: str) -> int:
+        """
+        FIX: a tabela no schema é 'for_aquisicao' com PK 'id_forma_aquisicao'.
+        O código antigo usava 'forma_aquisicao' (nome errado).
+        """
         forma_texto = (forma_texto or "").strip()
         if not forma_texto:
             raise ValueError("Forma de aquisição não pode ser vazia.")
         name_col = self._descobrir_coluna_texto_principal("for_aquisicao")
-        # PK em for_aquisicao: id_forma_aquisicao
         sql = f"SELECT id_forma_aquisicao AS id FROM for_aquisicao WHERE {name_col}=%s LIMIT 1"
         conn = self._get_conn()
         try:
@@ -327,6 +330,7 @@ class Database:
             conn.close()
 
     def listar_formas_aquisicao(self) -> List[Dict[str, Any]]:
+        """FIX: tabela correta é 'for_aquisicao', não 'forma_aquisicao'."""
         name_col = self._descobrir_coluna_texto_principal("for_aquisicao")
         sql = f"SELECT id_forma_aquisicao AS id, {name_col} AS nome FROM for_aquisicao ORDER BY nome"
         conn = self._get_conn()
@@ -358,6 +362,7 @@ class Database:
             conn.close()
 
     def listar_cnes(self) -> List[str]:
+        """Lista todos os CNES cadastrados."""
         sql = "SELECT DISTINCT cnes FROM ambulancia WHERE cnes IS NOT NULL AND cnes <> '' ORDER BY cnes"
         conn = self._get_conn()
         try:
@@ -366,6 +371,7 @@ class Database:
                 return [r["cnes"] for r in (cur.fetchall() or []) if r.get("cnes")]
         finally:
             conn.close()
+
 
     # ---------- unicidade ----------
     def _chassi_existe(self, chassi: str) -> bool:
@@ -411,11 +417,10 @@ class Database:
         finally:
             conn.close()
 
-    # --- NOVO: obter detalhes completos de uma ambulância pelo chassi ---
     def obter_ambulancia_por_chassi(self, chassi_ref: str) -> Optional[Dict[str, Any]]:
         """
-        Retorna os dados da ambulância cujo chassi = chassi_ref,
-        com ids e nomes legíveis de modelo e forma de aquisição.
+        FIX: Tabela de forma é 'for_aquisicao'.
+        Retorna dict com os dados da ambulância.
         """
         nome_modelo = self._descobrir_coluna_texto_principal("modelo")
         nome_forma = self._descobrir_coluna_texto_principal("for_aquisicao")
@@ -442,7 +447,8 @@ class Database:
         try:
             with conn.cursor() as cur:
                 cur.execute(sql, [chassi_ref.strip()])
-                return cur.fetchone()
+                row = cur.fetchone()
+                return row
         finally:
             conn.close()
 
@@ -455,13 +461,11 @@ class Database:
         id_forma_aquisicao: int,
         data_aquisicao: date,
         uso_oficial: bool,
-        cnes: Optional[str],
+        cnes: Optional[str],       
         placa: Optional[str] = None,
         chassi: Optional[str] = None,
     ) -> bool:
-        """
-        Atualiza a ambulância pelo ID. Respeita a regra do CNES x Oficial.
-        """
+        """"""
         cnes_final = (cnes or "").strip() if uso_oficial else None
         if uso_oficial and not cnes_final:
             raise ValueError("CNES é obrigatório para viatura oficial.")
@@ -471,7 +475,7 @@ class Database:
             "id_forma_aquisicao=%s",
             "data_aquisicao=%s",
             "uso_oficial=%s",
-            "cnes=%s",
+            "cnes=%s",          
         ]
         vals: List[Any] = [int(id_modelo), int(id_forma_aquisicao), data_aquisicao, bool(uso_oficial), cnes_final]
 
@@ -511,14 +515,15 @@ class Database:
         novo_chassi: Optional[str] = None,
     ) -> bool:
         """
-        Atualiza a ambulância localizando pelo CHASSI atual (único).
+        FIX: obter_id_ambulancia_por_chassi retorna int (não dict),
+        então o .get("id_ambulancia") que estava aqui causava AttributeError.
         """
         id_amb = self.obter_id_ambulancia_por_chassi(chassi_ref)
         if not id_amb:
             raise ValueError("Não encontrei ambulância com esse chassi.")
 
         return self.atualizar_ambulancia_por_id(
-            id_amb["id_ambulancia"] if isinstance(id_amb, dict) else int(id_amb),
+            int(id_amb),          # FIX: era id_amb["id_ambulancia"]
             id_modelo=id_modelo,
             id_forma_aquisicao=id_forma_aquisicao,
             data_aquisicao=data_aquisicao,
@@ -528,30 +533,27 @@ class Database:
             chassi=novo_chassi,
         )
 
-    # ------------------ CADASTRO (USANDO FKs EXISTENTES) ------------------
+    # ------------------ CADASTRO ------------------
     def cadastrar_ambulancia(
         self,
         *,
         placa: str,
         chassi: str,
-        # escolha UMA das duas abordagens abaixo para cada FK:
-        # 1) passar o TEXTO e eu converto para id existente (não cria):
         modelo_texto: Optional[str] = None,
         forma_aquisicao_texto: Optional[str] = None,
-        # 2) OU passar diretamente os IDs (mais seguro/rápido):
         id_modelo: Optional[int] = None,
-        id_forma_aquisicao: Optional[int] = None,   # <- FK em ambulancia
+        id_forma_aquisicao: Optional[int] = None,
         data_aquisicao: date,
         uso_oficial: bool,
         cnes: Optional[str] = None,
+        ano: Optional[int] = None,
+        denominacao: Optional[str] = None,
     ) -> int:
         """
-        Insere em 'ambulancia' referenciando SOMENTE registros já existentes:
-        - modelo (modelo.id_modelo)
-        - for_aquisicao (for_aquisicao.id_forma_aquisicao) -> FK: ambulancia.id_forma_aquisicao
-        Regras:
-        - placa/chassi únicos
-        - CNES obrigatório se uso_oficial=True; NULL se False
+        FIX:
+        - 
+        - 'ano' e 'denominacao' só são inseridos se a coluna existir no banco,
+          evitando erro caso o ALTER TABLE ainda não tenha sido rodado.
         """
         if not placa or not chassi:
             raise ValueError("Placa e chassi são obrigatórios.")
@@ -561,31 +563,43 @@ class Database:
         if self._chassi_existe(chassi):
             raise ValueError("Já existe ambulância com este chassi.")
 
-        # Resolver id_modelo
         if id_modelo is None:
             if not modelo_texto:
                 raise ValueError("Informe 'id_modelo' ou 'modelo_texto'.")
             id_modelo = self._get_modelo_id_por_texto(modelo_texto)
 
-        # Resolver id_forma_aquisicao
         if id_forma_aquisicao is None:
             if not forma_aquisicao_texto:
                 raise ValueError("Informe 'id_forma_aquisicao' ou 'forma_aquisicao_texto'.")
             id_forma_aquisicao = self._get_forma_id_por_texto(forma_aquisicao_texto)
 
-        # Regra CNES x Oficial
         cnes_final = (cnes or "").strip() if uso_oficial else None
         if uso_oficial and not cnes_final:
             raise ValueError("CNES é obrigatório para viatura oficial.")
 
+        # Colunas e valores base (sempre presentes)
         colunas = [
             "placa", "chassi", "id_modelo", "id_forma_aquisicao",
-            "data_aquisicao", "uso_oficial", "cnes"
+            "data_aquisicao", "uso_oficial", "cnes",   
         ]
-        valores = [
-            placa.strip(), chassi.strip(), int(id_modelo), int(id_forma_aquisicao),
-            data_aquisicao, bool(uso_oficial), cnes_final
+        valores: List[Any] = [
+            placa.strip(),
+            chassi.strip(),
+            int(id_modelo),
+            int(id_forma_aquisicao),
+            data_aquisicao,
+            bool(uso_oficial),
+            cnes_final,
         ]
+
+        # FIX: 'ano' e 'denominacao' só inseridos se a coluna existir
+        if ano is not None and self._tabela_tem_coluna("ambulancia", "ano"):
+            colunas.append("ano")
+            valores.append(ano)
+
+        if denominacao is not None and self._tabela_tem_coluna("ambulancia", "denominacao"):
+            colunas.append("denominacao")
+            valores.append(denominacao)
 
         placeholders = ", ".join(["%s"] * len(valores))
         sql = f"INSERT INTO ambulancia ({', '.join(colunas)}) VALUES ({placeholders})"
@@ -602,47 +616,98 @@ class Database:
             raise
         finally:
             conn.close()
-    def inserir_registro_uso(
-        self,
-        *,
-        total_km: int,
-        motivo: str | None,
-        data: date,
-        rodou: str | None = None,   # "Sim" ou "Não" (opcional)
-    ) -> int:
-        """
-        Insere em registro_uso (total_km, motivo, data [, rodou]).
-        - Schema esperado: idRegistro_uso (PK), total_km, motivo, data, (rodou opcional)
-        - Se a coluna 'rodou' existir, ela será incluída no INSERT com o valor "Sim"/"Não".
-        """
-        if total_km is None:
-            raise ValueError("total_km é obrigatório.")
-        if data is None:
-            raise ValueError("data é obrigatória.")
 
-        colunas = ["total_km", "motivo", "data"]
-        valores = [int(total_km), (motivo or None), data]
+    # ------------------ LISTAGEM COMPLETA ------------------
+    def listar_ambulancias(self) -> List[Dict[str, Any]]:
+        """
+        Retorna todas as ambulâncias com nome do modelo e forma de aquisição.
+        Usado por listardados para preencher a tabela.
+        """
+        nome_modelo = self._descobrir_coluna_texto_principal("modelo")
+        nome_forma  = self._descobrir_coluna_texto_principal("for_aquisicao")
 
-        # Inclui 'rodou' se a coluna existir no schema
+        # Inclui 'ano' e 'denominacao' apenas se existirem na tabela
+        col_ano  = ", a.ano"         if self._tabela_tem_coluna("ambulancia", "ano")         else ", NULL AS ano"
+        col_den  = ", a.denominacao" if self._tabela_tem_coluna("ambulancia", "denominacao") else ", NULL AS denominacao"
+
+        sql = f"""
+            SELECT
+                a.id_ambulancia,
+                a.placa,
+                a.chassi,
+                a.id_modelo,
+                m.{nome_modelo}  AS modelo_nome,
+                a.id_forma_aquisicao,
+                f.{nome_forma}   AS forma_nome,
+                a.data_aquisicao,
+                a.uso_oficial,
+                a.cnes
+                {col_ano}
+                {col_den}
+            FROM ambulancia a
+            LEFT JOIN modelo       m ON m.id_modelo           = a.id_modelo
+            LEFT JOIN for_aquisicao f ON f.id_forma_aquisicao = a.id_forma_aquisicao
+            ORDER BY a.id_ambulancia DESC
+        """
+        conn = self._get_conn()
         try:
-            if self._tabela_tem_coluna("registro_uso", "rodou"):
-                colunas.append("rodou")
-                # normaliza para "Sim" / "Não" (ou None)
-                rodou_norm = None
-                if isinstance(rodou, str):
-                    rodou_norm = "Sim" if rodou.strip().lower() in ("sim", "s", "yes", "y", "true", "1") else "Não" if rodou.strip().lower() in ("não", "nao", "n", "no", "false", "0") else rodou.strip()
-                valores.append(rodou_norm)
-        except Exception:
-            # Se der qualquer erro ao checar a coluna, segue sem 'rodou'
-            pass
+            with conn.cursor() as cur:
+                cur.execute(sql)
+                return list(cur.fetchall() or [])
+        finally:
+            conn.close()
 
-        placeholders = ", ".join(["%s"] * len(valores))
-        sql = f"INSERT INTO registro_uso ({', '.join(colunas)}) VALUES ({placeholders})"
+    # ------------------ EXCLUSÃO ------------------
+    def excluir_ambulancia_por_chassi(self, chassi: str) -> bool:
+        """Remove a ambulância e seus registros de uso vinculados."""
+        chassi = (chassi or "").strip()
+        if not chassi:
+            raise ValueError("Chassi não pode ser vazio.")
+
+        id_amb = self.obter_id_ambulancia_por_chassi(chassi)
+        if not id_amb:
+            return False
 
         conn = self._get_conn()
         try:
             with conn.cursor() as cur:
-                cur.execute(sql, valores)
+                # 1) Remove registros de uso vinculados (respeita a FK)
+                cur.execute("DELETE FROM registro_uso WHERE id_ambulancia = %s", (id_amb,))
+                # 2) Remove a ambulância
+                cur.execute("DELETE FROM ambulancia WHERE id_ambulancia = %s", (id_amb,))
+                ok = cur.rowcount > 0
+            conn.commit()
+            return ok
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
+    
+    # ------------------ REGISTRO DE USO ------------------
+    def inserir_registro_uso(
+        self,
+        *,
+        total_km: int,
+        motivo: Optional[str],
+        data: date,
+        rodou: str,
+        id_ambulancia: Optional[int] = None,
+        placa: Optional[str] = None,
+        km_inicial: Optional[int] = None,
+        km_final: Optional[int] = None,
+    ) -> int:
+        if id_ambulancia is None and placa:
+            id_ambulancia = self.obter_id_ambulancia_por_placa(placa.strip())
+
+        sql = """
+            INSERT INTO registro_uso (total_km, rodou, motivo, data, id_ambulancia, km_inicial, km_final)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        conn = self._get_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(sql, (total_km, rodou, motivo, data, id_ambulancia, km_inicial, km_final))
                 new_id = cur.lastrowid
             conn.commit()
             return int(new_id)
@@ -651,4 +716,42 @@ class Database:
             raise
         finally:
             conn.close()
-    
+
+    def listar_registros_uso(
+        self,
+        *,
+        mes: Optional[int] = None,
+        ano: Optional[int] = None,
+        id_ambulancia: Optional[int] = None,
+        placa: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
+        if id_ambulancia is None and placa:
+            id_ambulancia = self.obter_id_ambulancia_por_placa(placa.strip())
+
+        conditions = []
+        params = []
+
+        if mes is not None:
+            conditions.append("MONTH(data) = %s")
+            params.append(mes)
+        if ano is not None:
+            conditions.append("YEAR(data) = %s")
+            params.append(ano)
+        if id_ambulancia is not None:
+            conditions.append("id_ambulancia = %s")
+            params.append(id_ambulancia)
+
+        where = f"WHERE {' AND '.join(conditions)}" if conditions else ""
+        sql = f"""
+            SELECT idRegistro_uso, total_km, rodou, motivo, data, id_ambulancia, km_inicial, km_final
+            FROM registro_uso
+            {where}
+            ORDER BY data ASC
+        """
+        conn = self._get_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(sql, params)
+                return list(cur.fetchall() or [])
+        finally:
+            conn.close()

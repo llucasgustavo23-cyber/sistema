@@ -6,12 +6,11 @@ from datetime import date
 
 from PySide6.QtCore import Signal, QDate, Qt, QStringListModel
 from PySide6.QtWidgets import (
-    QWidget, QMessageBox, QDialogButtonBox, QCompleter, QButtonGroup
+    QDialog, QWidget, QMessageBox, QDialogButtonBox, QCompleter, QButtonGroup
 )
-from PySide6.QtGui import QCloseEvent
 
 from ui_modifica import Ui_modifca
-from app.database import Database  # <- integração com o banco
+from app.database import Database
 
 
 @dataclass
@@ -25,50 +24,108 @@ class AmbulanciaDTO:
     cnes: str
 
 
-class Modificar(QWidget, Ui_modifca):
-    gotomenu = Signal()
+class Modificar(QDialog, Ui_modifca):
     submitted = Signal(AmbulanciaDTO)
-    gotomodificar = Signal()
-    gotoambulancia = Signal()
 
-    def __init__(self, provider=None, parent: Optional[QWidget] = None) -> None:
+    def __init__(
+        self,
+        chassi: str = "",
+        provider=None,
+        parent: Optional[QWidget] = None,
+    ) -> None:
         super().__init__(parent)
         self._provider = provider
         self._db = Database()
+        self._chassi_inicial = chassi.strip()
 
         self.setupUi(self)
         self.setWindowTitle("Modificar Dados da Ambulância")
+        self.setModal(True)
 
-        # Aliases conforme seu .ui
-        self.placa = self.lineEdit          # (QLineEdit) – “Placa”
-        self.modelo_combo = self.comboBox   # (QComboBox) – “Modelo”
-        # self.tipo (QComboBox) – “Forma de aquisição” já existe no .ui
-        # self.chassi (QLineEdit) – existe no .ui
-        # self.cnes (QLineEdit), self.lbl_cnes (QLabel)
-        # RadioButtons: self.radioButton_2 = "Oficial" | self.radioButton = "Reserva"
-        # self.data (QDateEdit), self.ano (QSpinBox)
-        # (Se existir self.denominacao no .ui, não será utilizada/salva no BD)
+        # Corrige fundo cinza nas labels
+        self.card.setStyleSheet(
+            "#card {"
+            "  background: #ffffff;"
+            "  border-radius: 12px;"
+            "  padding: 20px;"
+            "  border: 1px solid #dddddd;"
+            "}"
+            "QLabel {"
+            "  background: transparent;"
+            "  font: 600 10pt 'Segoe UI';"
+            "  color: #444;"
+            "  margin-bottom: 4px;"
+            "}"
+            "QLineEdit, QComboBox, QDateEdit, QSpinBox {"
+            "  background: #f7f7f7;"
+            "  border: 1px solid #cfcfcf;"
+            "  border-radius: 6px;"
+            "  padding: 8px 10px;"
+            "  font: 10pt 'Segoe UI';"
+            "}"
+        )
 
-        # --- Grupo de botões para garantir exclusividade ---
+        self.card.setStyleSheet(
+            "#card {"
+            "  background: #ffffff;"
+            "  border-radius: 12px;"
+            "  padding: 20px;"
+            "  border: 1px solid #dddddd;"
+            "}"
+            "QLabel {"
+            "  background: transparent;"
+            "  font: 600 10pt 'Segoe UI';"
+            "  color: #444;"
+            "  margin-bottom: 4px;"
+            "}"
+            "QRadioButton {"
+            "  background: transparent;"
+            "  font: 10pt 'Segoe UI';"
+            "  color: #444;"
+            "}"
+            "QRadioButton::indicator {"
+            "  width: 16px;"
+            "  height: 16px;"
+            "  border-radius: 8px;"
+            "  border: 2px solid #9ca3af;"
+            "  background: #ffffff;"
+            "}"
+            "QRadioButton::indicator:checked {"
+            "  border: 2px solid #4f46e5;"
+            "  background: #4f46e5;"
+            "}"
+            "QRadioButton::indicator:hover {"
+            "  border: 2px solid #4f46e5;"
+            "}"
+            "QLineEdit, QComboBox, QDateEdit, QSpinBox {"
+            "  background: #f7f7f7;"
+            "  border: 1px solid #cfcfcf;"
+            "  border-radius: 6px;"
+            "  padding: 8px 10px;"
+            "  font: 10pt 'Segoe UI';"
+            "}"
+        )
+        # Aliases do .ui
+        self.placa = self.lineEdit
+        self.modelo_combo = self.comboBox
+        self.cnes_edit = self.cnes
+
+        # Grupo exclusivo radio buttons
         self._grupo_categoria = QButtonGroup(self)
         self._grupo_categoria.setExclusive(True)
         self._grupo_categoria.addButton(self.radioButton_2)  # Oficial
         self._grupo_categoria.addButton(self.radioButton)    # Reserva
 
-        # Models locais para autocompletes
+        # Models autocomplete
         self._model_placa = QStringListModel([], self)
         self._model_chassi = QStringListModel([], self)
         self._model_cnes = QStringListModel([], self)
 
-        # Autocompletes
         self._setup_completers()
-
-        # Carrega combos e sugestões do BD
         self._carregar_modelos_do_bd()
         self._carregar_formas_do_bd()
         self._carregar_sugestoes_do_bd()
 
-        # Se existir provider externo, sincroniza também
         if self._provider is not None:
             try:
                 self._provider.suggestions_changed.connect(self._sync_sugestoes_do_provider)
@@ -76,61 +133,58 @@ class Modificar(QWidget, Ui_modifca):
             except Exception:
                 pass
 
-        # -------------------- Conexões dos botões OK/Cancel --------------------
-        # (evita duplicar sinais: conecte por botão OU por accepted/rejected, não ambos)
-        try:
-            ok_btn = self.buttonBox.button(QDialogButtonBox.Ok)
-            cancel_btn = self.buttonBox.button(QDialogButtonBox.Cancel)
-            if ok_btn is not None:
-                ok_btn.clicked.connect(self.on_buttonBox_accepted)
-            if cancel_btn is not None:
-                cancel_btn.clicked.connect(self.on_buttonBox_rejected)
-        except Exception as e:
-            print("[Modificar] Aviso: não consegui conectar diretamente aos botões do buttonBox:", e)
+        # Botões OK/Cancelar
+        ok_btn = self.buttonBox.button(QDialogButtonBox.Ok)
+        cancel_btn = self.buttonBox.button(QDialogButtonBox.Cancel)
+        if ok_btn:
+            ok_btn.clicked.connect(self.on_buttonBox_accepted)
+        if cancel_btn:
+            cancel_btn.clicked.connect(self.on_buttonBox_rejected)
 
-        # Remover destaque de erro assim que alterar algo
+        # Limpa realce ao editar
         self.placa.textChanged.connect(lambda _: self.placa.setStyleSheet(""))
         self.chassi.textChanged.connect(lambda _: self.chassi.setStyleSheet(""))
-        self.cnes.textChanged.connect(lambda _: self.cnes.setStyleSheet(""))
+        self.cnes_edit.textChanged.connect(lambda _: self.cnes_edit.setStyleSheet(""))
         self.modelo_combo.currentIndexChanged.connect(lambda _: self.modelo_combo.setStyleSheet(""))
         self.ano.valueChanged.connect(lambda _: self.ano.setStyleSheet(""))
         self.data.dateChanged.connect(lambda _: self.data.setStyleSheet(""))
 
-        # -------------------- Regras de visibilidade do CNES --------------------
+        # Visibilidade CNES
         self.radioButton_2.toggled.connect(self._atualizar_cnes_visibilidade)
         self.radioButton.toggled.connect(self._atualizar_cnes_visibilidade)
         if not (self.radioButton_2.isChecked() or self.radioButton.isChecked()):
             self.radioButton_2.setChecked(True)
         self._atualizar_cnes_visibilidade()
 
+        # Se veio com chassi pré-definido, preenche tudo
+        if self._chassi_inicial:
+            self.chassi.setText(self._chassi_inicial)
+            self._aplicar_filtro_por_chassi()
+
     # -------------------- Completers --------------------
     def _setup_completers(self):
-        def mk(model: QStringListModel):
+        def mk(model):
             c = QCompleter(model, self)
             c.setCaseSensitivity(Qt.CaseInsensitive)
             c.setFilterMode(Qt.MatchContains)
             c.setCompletionMode(QCompleter.PopupCompletion)
             return c
 
-        # Guardar referências aos completers (para .complete())
         self._comp_placa = mk(self._model_placa)
         self._comp_chassi = mk(self._model_chassi)
         self._comp_cnes = mk(self._model_cnes)
 
         self.placa.setCompleter(self._comp_placa)
         self.chassi.setCompleter(self._comp_chassi)
-        self.cnes.setCompleter(self._comp_cnes)
+        self.cnes_edit.setCompleter(self._comp_cnes)
 
-        # Reagir quando o usuário ESCOLHER um chassi pelo completer
         try:
             self._comp_chassi.activated[str].connect(lambda _: self._aplicar_filtro_por_chassi())
         except Exception:
             pass
-
-        # Também quando ele terminar de digitar manualmente
         self.chassi.editingFinished.connect(self._aplicar_filtro_por_chassi)
 
-    # -------------------- Aplicar filtro após escolher chassi --------------------
+    # -------------------- Filtro por chassi --------------------
     def _aplicar_filtro_por_chassi(self):
         ch = (self.chassi.text() or "").strip()
         if not ch:
@@ -140,148 +194,113 @@ class Modificar(QWidget, Ui_modifca):
         try:
             rec = self._db.obter_ambulancia_por_chassi(ch)
         except Exception as e:
-            print("[Modificar] Erro ao obter ambulância por chassi:", e)
+            print("[Modificar] Erro:", e)
             self._restaurar_sugestoes_globais()
             return
 
         if not rec:
-            # Chassi não encontrado -> sugestões globais e não preenche nada
             self._restaurar_sugestoes_globais()
             return
 
-        # --------- 1) Preencher campos com os dados do chassi ----------
-        # Placa
         self.placa.setText(rec.get("placa") or "")
 
-        # Modelo (combo com userData=id_modelo)
         try:
-            idx_mod = self.modelo_combo.findData(rec.get("id_modelo"))
-            if idx_mod >= 0:
-                self.modelo_combo.setCurrentIndex(idx_mod)
+            idx = self.modelo_combo.findData(rec.get("id_modelo"))
+            if idx >= 0:
+                self.modelo_combo.setCurrentIndex(idx)
         except Exception:
             pass
 
-        # Forma de aquisição (combo self.tipo com userData=id_forma_aquisicao)
         try:
-            idx_forma = self.tipo.findData(rec.get("id_forma_aquisicao"))
-            if idx_forma >= 0:
-                self.tipo.setCurrentIndex(idx_forma)
+            idx = self.tipo.findData(rec.get("id_forma_aquisicao"))
+            if idx >= 0:
+                self.tipo.setCurrentIndex(idx)
         except Exception:
             pass
 
-        # Data de aquisição e ano (se existir)
         try:
             dpy = rec.get("data_aquisicao")
-            if dpy:  # datetime.date
+            if dpy:
                 self.data.setDate(QDate(dpy.year, dpy.month, dpy.day))
-                try:
-                    self.ano.setValue(int(dpy.year))
-                except Exception:
-                    pass
+                self.ano.setValue(int(dpy.year))
         except Exception:
             pass
 
-        # Oficial / Reserva
         oficial = bool(rec.get("uso_oficial"))
-        self.radioButton_2.setChecked(oficial)   # Oficial
-        self.radioButton.setChecked(not oficial) # Reserva
+        self.radioButton_2.setChecked(oficial)
+        self.radioButton.setChecked(not oficial)
         self._atualizar_cnes_visibilidade()
 
-        # CNES (apenas se oficial)
-        if oficial:
-            self.cnes.setText(rec.get("cnes") or "")
-        else:
-            self.cnes.clear()
+        self.cnes_edit.setText(rec.get("cnes") or "" if oficial else "")
+        if not oficial:
+            self.cnes_edit.clear()
 
-        # --------- 2) Filtrar sugestões para APENAS os dados desse chassi ----------
-        placas = [rec["placa"]] if rec.get("placa") else []
-        cness = [rec["cnes"]] if (oficial and rec.get("cnes")) else []
-
-        # Se preferir fazer via banco:
-        # placas = self._db.listar_placas_por_chassi(ch)
-        # cness  = self._db.listar_cnes_por_chassi(ch)
-
-        self._model_placa.setStringList(placas)
-        self._model_cnes.setStringList(cness)
-
-        # --------- 3) Mostrar os popups de sugestões IMEDIATAMENTE ----------
-        try:
-            self._comp_placa.setCompletionPrefix("")
-            self._comp_placa.complete()
-            self._comp_cnes.setCompletionPrefix("")
-            self._comp_cnes.complete()
-        except Exception:
-            pass
+        self._model_placa.setStringList([rec["placa"]] if rec.get("placa") else [])
+        self._model_cnes.setStringList([rec["cnes"]] if (oficial and rec.get("cnes")) else [])
 
     def _restaurar_sugestoes_globais(self):
-        """Volta a carregar as sugestões gerais do banco (sem filtro por chassi)."""
         try:
             self._model_placa.setStringList(self._db.listar_placas())
             self._model_chassi.setStringList(self._db.listar_chassis())
             self._model_cnes.setStringList(self._db.listar_cnes())
         except Exception as e:
-            print("[Modificar] Erro ao restaurar sugestões globais:", e)
+            print("[Modificar] Erro ao restaurar sugestões:", e)
 
-    # -------------------- Carregamentos do BD --------------------
+    # -------------------- Carregamentos --------------------
     def _carregar_modelos_do_bd(self):
-        """Preenche combo de modelo com (nome visível, id no userData)."""
         self.modelo_combo.clear()
         try:
             for row in self._db.listar_modelos():
                 self.modelo_combo.addItem(str(row["nome"]), row["id_modelo"])
         except Exception as e:
-            print("[Modificar] Erro ao carregar modelos:", e)
+            print("[Modificar] Erro modelos:", e)
 
     def _carregar_formas_do_bd(self):
-        """Preenche combo de forma de aquisição (self.tipo) com (nome visível, id no userData)."""
         try:
             self.tipo.clear()
             for row in self._db.listar_formas_aquisicao():
                 self.tipo.addItem(str(row["nome"]), row["id"])
         except Exception as e:
-            print("[Modificar] Erro ao carregar formas de aquisição:", e)
+            print("[Modificar] Erro formas:", e)
 
     def _carregar_sugestoes_do_bd(self):
-        """Carrega listas para os autocompletes a partir do banco."""
         try:
             self._model_placa.setStringList(self._db.listar_placas())
             self._model_chassi.setStringList(self._db.listar_chassis())
             self._model_cnes.setStringList(self._db.listar_cnes())
         except Exception as e:
-            print("[Modificar] Erro ao carregar sugestões do BD:", e)
+            print("[Modificar] Erro sugestões:", e)
 
     def _sync_sugestoes_do_provider(self):
-        """Se houver provider externo, sincroniza com ele também (opcional)."""
         try:
             self._model_placa.setStringList(self._provider.placas() or self._db.listar_placas())
             self._model_chassi.setStringList(self._provider.chassis() or self._db.listar_chassis())
             self._model_cnes.setStringList(self._provider.cnes() or self._db.listar_cnes())
         except Exception:
-            # Se o provider não tiver esses métodos, usamos apenas o BD
             self._carregar_sugestoes_do_bd()
 
-    # -------------------- VISIBILIDADE DO CNES --------------------
+    # -------------------- Visibilidade CNES --------------------
     def _atualizar_cnes_visibilidade(self) -> None:
         oficial = self.radioButton_2.isChecked()
         self.lbl_cnes.setVisible(oficial)
-        self.cnes.setVisible(oficial)
-        self.cnes.setEnabled(oficial)
+        self.cnes_edit.setVisible(oficial)
+        self.cnes_edit.setEnabled(oficial)
         if not oficial:
-            self.cnes.clear()
-            self.cnes.setStyleSheet("")
+            self.cnes_edit.clear()
+            self.cnes_edit.setStyleSheet("")
 
-    # -------------------- OK / CANCELAR --------------------
+    # -------------------- OK / Cancelar --------------------
     def on_buttonBox_accepted(self):
-        """Valida, atualiza no banco e emite o DTO."""
         self._resetar_estilos()
-
         oficial = self.radioButton_2.isChecked()
 
-        # Validação
         campos_invalidos = []
-        if not self.placa.text().strip(): campos_invalidos.append(self.placa)
-        if not self.chassi.text().strip(): campos_invalidos.append(self.chassi)
-        if oficial and not self.cnes.text().strip(): campos_invalidos.append(self.cnes)
+        if not self.placa.text().strip():
+            campos_invalidos.append(self.placa)
+        if not self.chassi.text().strip():
+            campos_invalidos.append(self.chassi)
+        if oficial and not self.cnes_edit.text().strip():
+            campos_invalidos.append(self.cnes_edit)
 
         if campos_invalidos:
             self._destacar_campos_vazios(campos_invalidos)
@@ -289,7 +308,6 @@ class Modificar(QWidget, Ui_modifca):
             QMessageBox.warning(self, "Campos obrigatórios", "Preencha os campos destacados.")
             return
 
-        # Monta DTO (útil para quem ouvir o sinal submitted)
         dto = AmbulanciaDTO(
             modelo=self.modelo_combo.currentText().strip(),
             placa=self.placa.text().strip(),
@@ -297,17 +315,13 @@ class Modificar(QWidget, Ui_modifca):
             tipo_aquisicao=self.tipo.currentText().strip(),
             data_aquisicao=self.data.date(),
             ano=self.ano.value(),
-            cnes=self.cnes.text().strip(),
+            cnes=self.cnes_edit.text().strip(),
         )
 
-        # Converte QDate -> date
         d = date(dto.data_aquisicao.year(), dto.data_aquisicao.month(), dto.data_aquisicao.day())
-
-        # Obtém IDs das combos (userData)
         id_modelo = self.modelo_combo.currentData()
         id_forma = self.tipo.currentData()
 
-        # Atualiza no banco localizando pelo CHASSI atual
         try:
             ok = self._db.atualizar_ambulancia_por_chassi(
                 chassi_ref=dto.chassi,
@@ -327,41 +341,29 @@ class Modificar(QWidget, Ui_modifca):
             QMessageBox.warning(self, "Aviso", "Nenhuma linha atualizada. Verifique o chassi informado.")
             return
 
-        # Feedback + sinais
         self.submitted.emit(dto)
         QMessageBox.information(self, "Sucesso", "Atualização salva com sucesso!")
-        self._carregar_sugestoes_do_bd()  # atualiza autocompletes após salvar
-        self.gotomodificar.emit()
+        self.accept()
 
     def on_buttonBox_rejected(self):
         self._resetar_estilos()
-        self.gotomenu.emit()
+        self.reject()
 
-    # -------------------- Proteção contra fechamento --------------------
-    def closeEvent(self, event: QCloseEvent) -> None:
-        if self.parent() is not None:
-            self.gotomenu.emit()
-            event.ignore()
-        else:
-            event.accept()
-
-    # -------------------- Helpers de validação/estilo --------------------
+    # -------------------- Helpers --------------------
     def _resetar_estilos(self):
-        for w in (self.placa, self.chassi, self.cnes):
+        for w in (self.placa, self.chassi, self.cnes_edit):
             w.setStyleSheet("")
         self.modelo_combo.setStyleSheet("")
         self.ano.setStyleSheet("")
         self.data.setStyleSheet("")
 
     def _destacar_campos_vazios(self, widgets):
-        estilo_line = "QLineEdit { border: 1px solid #d9534f; border-radius: 6px; }"
-        estilo_combo = "QComboBox { border: 1px solid #d9534f; border-radius: 6px; }"
-        estilo_spin = "QSpinBox { border: 1px solid #d9534f; border-radius: 6px; }"
-        estilo_date = "QDateEdit { border: 1px solid #d9534f; border-radius: 6px; }"
+        estilos = {
+            "QLineEdit": "QLineEdit { border: 1px solid #d9534f; border-radius: 6px; }",
+            "QComboBox": "QComboBox { border: 1px solid #d9534f; border-radius: 6px; }",
+            "QSpinBox":  "QSpinBox  { border: 1px solid #d9534f; border-radius: 6px; }",
+            "QDateEdit": "QDateEdit { border: 1px solid #d9534f; border-radius: 6px; }",
+        }
         for w in widgets:
             cls = w.metaObject().className()
-            if cls == "QLineEdit": w.setStyleSheet(estilo_line)
-            elif cls == "QComboBox": w.setStyleSheet(estilo_combo)
-            elif cls == "QSpinBox": w.setStyleSheet(estilo_spin)
-            elif cls == "QDateEdit": w.setStyleSheet(estilo_date)
-            else: w.setStyleSheet(estilo_line)
+            w.setStyleSheet(estilos.get(cls, estilos["QLineEdit"]))

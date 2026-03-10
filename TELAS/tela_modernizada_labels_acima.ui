@@ -1,381 +1,341 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>1113</width>
-    <height>720</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QLabel" name="title">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="styleSheet">
-      <string>font:700 22pt &quot;Segoe UI&quot;; padding-bottom:4px;</string>
-     </property>
-     <property name="text">
-      <string>CADASTRO AMBULÂNCIAS</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QFrame" name="card">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="styleSheet">
-      <string>#card{background:#ffffff;border-radius:12px;padding:20px;border:1px solid #dddddd;}
-QLabel.formLabel{font:600 10pt 'Segoe UI'; color:#444; margin-bottom:4px;}
-QLineEdit,QComboBox,QDateEdit,QSpinBox{background:#f7f7f7;border:1px solid #cfcfcf;border-radius:6px;padding:8px 10px; font:10pt 'Segoe UI';}</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <layout class="QGridLayout" name="grid" columnstretch="0,0,0">
-      <property name="leftMargin">
-       <number>12</number>
-      </property>
-      <property name="topMargin">
-       <number>12</number>
-      </property>
-      <property name="rightMargin">
-       <number>12</number>
-      </property>
-      <property name="bottomMargin">
-       <number>12</number>
-      </property>
-      <property name="horizontalSpacing">
-       <number>24</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>14</number>
-      </property>
-      <item row="11" column="0" colspan="3">
-       <widget class="QLineEdit" name="denominacao">
-        <property name="placeholderText">
-         <string>Insira aqui</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QComboBox" name="comboBox">
-        <item>
-         <property name="text">
-          <string>1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>3</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>4</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>5</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="7" column="2">
-       <widget class="QComboBox" name="tipo">
-        <item>
-         <property name="text">
-          <string>Compra</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Doação</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Locação</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="8" column="2">
-       <widget class="QLabel" name="lbl_cnes">
-        <property name="styleSheet">
-         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-        </property>
-        <property name="text">
-         <string>CNES</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="lbl_data">
-        <property name="styleSheet">
-         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-        </property>
-        <property name="text">
-         <string>Data de aquisição</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QRadioButton" name="radioButton">
-        <property name="text">
-         <string>Reserva</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="lbl_placa">
-        <property name="styleSheet">
-         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-        </property>
-        <property name="text">
-         <string>Modelo</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="2">
-       <widget class="QLineEdit" name="cnes">
-        <property name="placeholderText">
-         <string>Insira aqui</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="2">
-       <widget class="QLabel" name="lbl_chassi">
-        <property name="styleSheet">
-         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-        </property>
-        <property name="text">
-         <string>Chassi</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="3">
-       <widget class="QLineEdit" name="lineEdit">
-        <property name="inputMask">
-         <string/>
-        </property>
-        <property name="placeholderText">
-         <string>Insira aqui</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="2">
-       <widget class="QLabel" name="lbl_tipo">
-        <property name="styleSheet">
-         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-        </property>
-        <property name="text">
-         <string>Tipo de aquisição</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QDateEdit" name="data">
-        <property name="displayFormat">
-         <string>dd/MM/yyyy</string>
-        </property>
-        <property name="calendarPopup">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2">
-       <widget class="QLineEdit" name="chassi">
-        <property name="dragEnabled">
-         <bool>false</bool>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-        <property name="placeholderText">
-         <string>Insira aqui</string>
-        </property>
-        <property name="clearButtonEnabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="lbl_denominacao">
-        <property name="styleSheet">
-         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-        </property>
-        <property name="text">
-         <string>Denominação</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QSpinBox" name="ano">
-        <property name="minimum">
-         <number>1950</number>
-        </property>
-        <property name="maximum">
-         <number>2100</number>
-        </property>
-        <property name="value">
-         <number>2024</number>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0">
-       <widget class="QLabel" name="lbl_ano">
-        <property name="styleSheet">
-         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-        </property>
-        <property name="text">
-         <string>Ano</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lbl_modelo">
-        <property name="styleSheet">
-         <string>QLabel { font:600 10pt &quot;Segoe UI&quot;; color:#444; margin-bottom:4px; }</string>
-        </property>
-        <property name="text">
-         <string>Placa</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="radioButton_2">
-        <property name="text">
-         <string>Oficial</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="btnrow">
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <spacer name="hs">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>Amculâncias Cadastradas</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-  </layout>
- </widget>
- <resources/>
- <connections/>
-</ui>
+# -*- coding: utf-8 -*-
+
+################################################################################
+## Form generated from reading UI file 'tela_modernizada_labels_acima.ui'
+##
+## Created by: Qt User Interface Compiler version 6.10.2
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
+
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDateEdit,
+    QDialogButtonBox, QFrame, QGridLayout, QHBoxLayout,
+    QLabel, QLineEdit, QPushButton, QRadioButton,
+    QSizePolicy, QSpacerItem, QSpinBox, QVBoxLayout,
+    QWidget)
+
+class Ui_cadastro(object):
+    def setupUi(self, Form):
+        if not Form.objectName():
+            Form.setObjectName(u"Form")
+        Form.resize(1113, 720)
+
+        # Estilo global igual às outras telas
+        Form.setStyleSheet(u"""
+QWidget {
+    background-color: #f0f4f8;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #1e293b;
+}
+
+QFrame#card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+QLabel {
+    background: transparent;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+QLabel#title {
+    background: transparent;
+    color: #1e293b;
+    font-size: 22px;
+    font-weight: 700;
+    padding-bottom: 4px;
+}
+
+QLineEdit, QComboBox, QDateEdit, QSpinBox {
+    background-color: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #1e293b;
+    min-height: 20px;
+}
+
+QLineEdit:focus, QComboBox:focus, QDateEdit:focus, QSpinBox:focus {
+    border-color: #4f46e5;
+    background-color: #ffffff;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 24px;
+}
+
+QComboBox QAbstractItemView {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    selection-background-color: #ede9fe;
+    selection-color: #1e293b;
+}
+
+QDateEdit::drop-down {
+    border: none;
+    width: 24px;
+}
+
+QSpinBox::up-button, QSpinBox::down-button {
+    border: none;
+    width: 18px;
+}
+
+QRadioButton {
+    background: transparent;
+    color: #475569;
+    font-size: 13px;
+    spacing: 6px;
+}
+
+QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    border: 2px solid #cbd5e1;
+    background: #ffffff;
+}
+
+QRadioButton::indicator:checked {
+    border-color: #4f46e5;
+    background-color: #4f46e5;
+}
+
+QPushButton#pushButton {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 36px;
+}
+
+QPushButton#pushButton:hover {
+    background-color: #e2e8f0;
+    color: #334155;
+}
+
+QDialogButtonBox QPushButton {
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 36px;
+    min-width: 90px;
+}
+
+QDialogButtonBox QPushButton[text="OK"],
+QDialogButtonBox QPushButton[text="&OK"] {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+}
+
+QDialogButtonBox QPushButton[text="OK"]:hover,
+QDialogButtonBox QPushButton[text="&OK"]:hover {
+    background-color: #4338ca;
+}
+
+QDialogButtonBox QPushButton[text="Cancel"],
+QDialogButtonBox QPushButton[text="&Cancel"],
+QDialogButtonBox QPushButton[text="Cancelar"] {
+    background-color: #ffffff;
+    color: #64748b;
+    border: 1.5px solid #e2e8f0;
+}
+
+QDialogButtonBox QPushButton[text="Cancel"]:hover,
+QDialogButtonBox QPushButton[text="&Cancel"]:hover,
+QDialogButtonBox QPushButton[text="Cancelar"]:hover {
+    background-color: #f8fafc;
+    color: #334155;
+    border-color: #cbd5e1;
+}
+        """)
+
+        self.verticalLayout = QVBoxLayout(Form)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setSpacing(12)
+        self.verticalLayout.setContentsMargins(16, 16, 16, 16)
+
+        self.title = QLabel(Form)
+        self.title.setObjectName(u"title")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.title.sizePolicy().hasHeightForWidth())
+        self.title.setSizePolicy(sizePolicy)
+
+        self.verticalLayout.addWidget(self.title)
+
+        self.card = QFrame(Form)
+        self.card.setObjectName(u"card")
+        sizePolicy.setHeightForWidth(self.card.sizePolicy().hasHeightForWidth())
+        self.card.setSizePolicy(sizePolicy)
+        self.card.setFrameShape(QFrame.StyledPanel)
+        self.grid = QGridLayout(self.card)
+        self.grid.setObjectName(u"grid")
+        self.grid.setHorizontalSpacing(24)
+        self.grid.setVerticalSpacing(14)
+        self.grid.setContentsMargins(20, 20, 20, 20)
+
+        self.denominacao = QLineEdit(self.card)
+        self.denominacao.setObjectName(u"denominacao")
+        self.grid.addWidget(self.denominacao, 11, 0, 1, 3)
+
+        self.comboBox = QComboBox(self.card)
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.setObjectName(u"comboBox")
+        self.grid.addWidget(self.comboBox, 5, 0, 1, 1)
+
+        self.tipo = QComboBox(self.card)
+        self.tipo.addItem("")
+        self.tipo.addItem("")
+        self.tipo.addItem("")
+        self.tipo.setObjectName(u"tipo")
+        self.grid.addWidget(self.tipo, 7, 2, 1, 1)
+
+        self.lbl_cnes = QLabel(self.card)
+        self.lbl_cnes.setObjectName(u"lbl_cnes")
+        self.grid.addWidget(self.lbl_cnes, 8, 2, 1, 1)
+
+        self.lbl_data = QLabel(self.card)
+        self.lbl_data.setObjectName(u"lbl_data")
+        self.grid.addWidget(self.lbl_data, 6, 0, 1, 1)
+
+        self.radioButton = QRadioButton(self.card)
+        self.radioButton.setObjectName(u"radioButton")
+        self.grid.addWidget(self.radioButton, 1, 0, 1, 1)
+
+        self.lbl_placa = QLabel(self.card)
+        self.lbl_placa.setObjectName(u"lbl_placa")
+        self.grid.addWidget(self.lbl_placa, 4, 0, 1, 1)
+
+        self.cnes = QLineEdit(self.card)
+        self.cnes.setObjectName(u"cnes")
+        self.grid.addWidget(self.cnes, 9, 2, 1, 1)
+
+        self.lbl_chassi = QLabel(self.card)
+        self.lbl_chassi.setObjectName(u"lbl_chassi")
+        self.grid.addWidget(self.lbl_chassi, 4, 2, 1, 1)
+
+        self.lineEdit = QLineEdit(self.card)
+        self.lineEdit.setObjectName(u"lineEdit")
+        self.grid.addWidget(self.lineEdit, 3, 0, 1, 3)
+
+        self.lbl_tipo = QLabel(self.card)
+        self.lbl_tipo.setObjectName(u"lbl_tipo")
+        self.grid.addWidget(self.lbl_tipo, 6, 2, 1, 1)
+
+        self.data = QDateEdit(self.card)
+        self.data.setObjectName(u"data")
+        self.data.setCalendarPopup(True)
+        self.grid.addWidget(self.data, 7, 0, 1, 1)
+
+        self.chassi = QLineEdit(self.card)
+        self.chassi.setObjectName(u"chassi")
+        self.chassi.setDragEnabled(False)
+        self.chassi.setReadOnly(False)
+        self.chassi.setClearButtonEnabled(False)
+        self.grid.addWidget(self.chassi, 5, 2, 1, 1)
+
+        self.lbl_denominacao = QLabel(self.card)
+        self.lbl_denominacao.setObjectName(u"lbl_denominacao")
+        self.grid.addWidget(self.lbl_denominacao, 10, 0, 1, 1)
+
+        self.ano = QSpinBox(self.card)
+        self.ano.setObjectName(u"ano")
+        self.ano.setMinimum(1950)
+        self.ano.setMaximum(2100)
+        self.ano.setValue(2024)
+        self.grid.addWidget(self.ano, 9, 0, 1, 1)
+
+        self.lbl_ano = QLabel(self.card)
+        self.lbl_ano.setObjectName(u"lbl_ano")
+        self.grid.addWidget(self.lbl_ano, 8, 0, 1, 1)
+
+        self.lbl_modelo = QLabel(self.card)
+        self.lbl_modelo.setObjectName(u"lbl_modelo")
+        self.grid.addWidget(self.lbl_modelo, 2, 0, 1, 1)
+
+        self.radioButton_2 = QRadioButton(self.card)
+        self.radioButton_2.setObjectName(u"radioButton_2")
+        self.grid.addWidget(self.radioButton_2, 0, 0, 1, 1)
+
+        self.verticalLayout.addWidget(self.card)
+
+        self.btnrow = QHBoxLayout()
+        self.btnrow.setObjectName(u"btnrow")
+        self.btnrow.setContentsMargins(0, 0, 0, 0)
+        self.btnrow.setSpacing(10)
+
+        self.hs = QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.btnrow.addItem(self.hs)
+
+        self.pushButton = QPushButton(Form)
+        self.pushButton.setObjectName(u"pushButton")
+        self.btnrow.addWidget(self.pushButton)
+
+        self.buttonBox = QDialogButtonBox(Form)
+        self.buttonBox.setObjectName(u"buttonBox")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.buttonBox.setSizePolicy(sizePolicy1)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+        self.btnrow.addWidget(self.buttonBox)
+
+        self.verticalLayout.addLayout(self.btnrow)
+
+        self.retranslateUi(Form)
+        QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.title.setText(QCoreApplication.translate("Form", u"CADASTRO AMBULÂNCIAS", None))
+
+        self.denominacao.setPlaceholderText(QCoreApplication.translate("Form", u"Insira aqui", None))
+
+        self.comboBox.setItemText(0, QCoreApplication.translate("Form", u"Ford", None))
+        self.comboBox.setItemText(1, QCoreApplication.translate("Form", u"Fiat", None))
+        self.comboBox.setItemText(2, QCoreApplication.translate("Form", u"Honda", None))
+        self.comboBox.setItemText(3, QCoreApplication.translate("Form", u"Toyota", None))
+        self.comboBox.setItemText(4, QCoreApplication.translate("Form", u"Mercedez", None))
+
+        self.tipo.setItemText(0, QCoreApplication.translate("Form", u"Doação", None))
+        self.tipo.setItemText(1, QCoreApplication.translate("Form", u"Compra", None))
+        self.tipo.setItemText(2, QCoreApplication.translate("Form", u"Emenda parlamentar", None))
+
+        self.lbl_cnes.setText(QCoreApplication.translate("Form", u"CNES", None))
+        self.lbl_data.setText(QCoreApplication.translate("Form", u"Data de aquisição", None))
+        self.radioButton.setText(QCoreApplication.translate("Form", u"Reserva", None))
+        self.lbl_placa.setText(QCoreApplication.translate("Form", u"Modelo", None))
+        self.cnes.setPlaceholderText(QCoreApplication.translate("Form", u"Insira aqui", None))
+        self.lbl_chassi.setText(QCoreApplication.translate("Form", u"Chassi", None))
+        self.lineEdit.setPlaceholderText(QCoreApplication.translate("Form", u"Insira aqui", None))
+        self.lbl_tipo.setText(QCoreApplication.translate("Form", u"Tipo de aquisição", None))
+        self.data.setDisplayFormat(QCoreApplication.translate("Form", u"dd/MM/yyyy", None))
+        self.chassi.setPlaceholderText(QCoreApplication.translate("Form", u"Insira aqui", None))
+        self.lbl_denominacao.setText(QCoreApplication.translate("Form", u"Denominação", None))
+        self.lbl_ano.setText(QCoreApplication.translate("Form", u"Ano", None))
+        self.lbl_modelo.setText(QCoreApplication.translate("Form", u"Placa", None))
+        self.radioButton_2.setText(QCoreApplication.translate("Form", u"Oficial", None))
+        self.pushButton.setText(QCoreApplication.translate("Form", u"Ambulâncias Cadastradas", None))
